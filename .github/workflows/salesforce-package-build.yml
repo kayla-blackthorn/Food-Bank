@@ -18,14 +18,14 @@ jobs:
       - name: Install CumulusCI
         run: pip install cumulusci
 
-      - name: Debug Secrets and cumulusci.key
-        run: |
-          ls -la   # List files in the directory for debugging
-          echo "Contents of cumulusci.key:"
-          cat cumulusci.key
+      # - name: Debug Secrets and cumulusci.key
+      #   run: |
+      #     ls -la   # List files in the directory for debugging
+      #     echo "Contents of cumulusci.key:"
+      #     cat cumulusci.key
 
-          echo "Resolved PACKAGE_ORG_USERNAME: ${{ secrets.PACKAGE_ORG_USERNAME }}"
-          echo "Resolved PACKAGE_ORG_PASSWORD: ${{ secrets.PACKAGE_ORG_PASSWORD }}"
+      #     echo "Resolved PACKAGE_ORG_USERNAME: ${{ secrets.PACKAGE_ORG_USERNAME }}"
+      #     echo "Resolved PACKAGE_ORG_PASSWORD: ${{ secrets.PACKAGE_ORG_PASSWORD }}"
 
       - name: Connect Org
         run: |
