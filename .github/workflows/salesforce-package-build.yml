@@ -5,6 +5,13 @@ on:
     branches:
       - main
 
+env:
+    CUMULUSCI_KEYCHAIN_CLASS: cumulusci.core.keychain.EnvironmentProjectKeychain
+    CUMULUSCI_SERVICE_github: ${{ secrets.CUMULUSCI_SERVICE_github }}
+    CUMULUSCI_ORG_packaging: '{"username": "kaylamp04@creative-hawk-tskjq1.com", "instance_url": "https://login.salesforce.com"}'
+    SFDX_CLIENT_ID: ${{ secrets.SFDX_CLIENT_ID }}
+    SFDX_HUB_KEY: ${{ secrets.SFDX_HUB_KEY }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,9 +34,9 @@ jobs:
       #     echo "Resolved PACKAGE_ORG_USERNAME: ${{ secrets.PACKAGE_ORG_USERNAME }}"
       #     echo "Resolved PACKAGE_ORG_PASSWORD: ${{ secrets.PACKAGE_ORG_PASSWORD }}"
 
-      - name: Connect Org
-        run: |
-          cci org connect packageorg --orgname ${{ secrets.PACKAGE_ORG_USERNAME }} --password ${{ secrets.PACKAGE_ORG_PASSWORD }}
+      # - name: Connect Org
+      #   run: |
+      #     cci org connect packageorg --orgname ${{ secrets.PACKAGE_ORG_USERNAME }} --password ${{ secrets.PACKAGE_ORG_PASSWORD }}
 
       - name: Convert to Metadata API Format
         run: |
