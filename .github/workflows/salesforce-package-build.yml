@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install CumulusCI
+        run: pip install cumulusci
+        
       - name: Connect Org
         run: |
           cci org connect packageorg
