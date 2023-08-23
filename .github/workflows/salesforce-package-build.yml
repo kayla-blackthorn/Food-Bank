@@ -41,6 +41,9 @@ jobs:
       #   run: |
       #     cci org connect packageorg --orgname ${{ secrets.PACKAGE_ORG_USERNAME }} --password ${{ secrets.PACKAGE_ORG_PASSWORD }}
 
+      - name: Set up Salesforce CLI
+        uses: SalesforceFoundation/setup-sfdx@v
+
       - name: Convert to Metadata API Format
         run: |
           cci task run dx_convert_from
