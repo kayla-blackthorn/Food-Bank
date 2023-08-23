@@ -20,6 +20,7 @@ jobs:
 
       - name: Debug Secrets and cumulusci.key
         run: |
+          ls -la   # List files in the directory for debugging
           echo "Contents of cumulusci.key:"
           cat cumulusci.key
 
