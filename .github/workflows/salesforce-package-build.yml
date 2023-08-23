@@ -41,8 +41,11 @@ jobs:
       #   run: |
       #     cci org connect packageorg --orgname ${{ secrets.PACKAGE_ORG_USERNAME }} --password ${{ secrets.PACKAGE_ORG_PASSWORD }}
 
-      - name: Set up Salesforce CLI
-        uses: SalesforceFoundation/setup-sfdx@v
+      - name: Install sfdx
+        run: |
+          mkdir sfdx
+          wget -qO- https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz | tar xJ -C sfdx --strip-components 1
+          ./sfdx/install
 
       - name: Convert to Metadata API Format
         run: |
