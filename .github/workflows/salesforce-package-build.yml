@@ -40,7 +40,14 @@ jobs:
 
       - name: Connect Package Org
         run: |
-          cci org connect packageorg
+          cci org connect packageorg > task_logs.txt 2>&1
+        continue-on-error: true # Continue even if the step fails
+
+      - name: Print Error Logs if Step Failed
+        if: steps.my-step.outcome == 'failure' # Check if the previous step failed
+        run: |
+          echo "Step failed. Printing error logs:"
+          cat task_logs.txt
 
       - name: Deploy to Package Org
         run: |
