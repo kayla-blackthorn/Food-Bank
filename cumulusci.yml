@@ -8,6 +8,11 @@ project:
         default_branch: 'main'
     source_format: sfdx
 
+orgs:
+  packageorg:
+    username: kaylamp04@creative-hawk-tskjq1.com
+    instance_url: https://login.salesforce.com
+
 tasks:
     robot:
         options:
