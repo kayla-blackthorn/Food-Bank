@@ -34,9 +34,9 @@ jobs:
           wget -qO- https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz | tar xJ -C sfdx --strip-components 1
           ./sfdx/install
 
-      - name: Convert to Metadata API Format
-        run: |
-          /path/to/cci/task run dx_convert_from
+      # - name: Convert to Metadata API Format
+      #   run: |
+      #     cci task run dx_convert_from
 
       - name: Deploy to Package Org
         run: |
