@@ -10,8 +10,6 @@ project:
 
 orgs:
   packageorg:
-    username: kaylamp04@creative-hawk-tskjq1.com
-    instance_url: https://login.salesforce.com
 
 tasks:
     robot:
