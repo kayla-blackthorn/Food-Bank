@@ -38,6 +38,10 @@ jobs:
       #   run: |
       #     cci task run dx_convert_from
 
+      -name: Connect Package Org
+        run: |
+          cci org connect packageorg
+
       - name: Deploy to Package Org
         run: |
           cci task run deploy --org packageorg
