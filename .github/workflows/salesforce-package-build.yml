@@ -28,19 +28,6 @@ jobs:
       - name: Install CumulusCI
         run: pip install cumulusci
 
-      # - name: Debug Secrets and cumulusci.key
-      #   run: |
-      #     ls -la   # List files in the directory for debugging
-      #     echo "Contents of cumulusci.key:"
-      #     cat cumulusci.key
-
-      #     echo "Resolved PACKAGE_ORG_USERNAME: ${{ secrets.PACKAGE_ORG_USERNAME }}"
-      #     echo "Resolved PACKAGE_ORG_PASSWORD: ${{ secrets.PACKAGE_ORG_PASSWORD }}"
-
-      # - name: Connect Org
-      #   run: |
-      #     cci org connect packageorg --orgname ${{ secrets.PACKAGE_ORG_USERNAME }} --password ${{ secrets.PACKAGE_ORG_PASSWORD }}
-
       - name: Install sfdx
         run: |
           mkdir sfdx
@@ -49,7 +36,7 @@ jobs:
 
       - name: Convert to Metadata API Format
         run: |
-          cci task run dx_convert_from
+          /path/to/cci/task run dx_convert_from
 
       - name: Deploy to Package Org
         run: |
