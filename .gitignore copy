@@ -1,0 +1,42 @@
+# Salesforce / SFDX / CCI
+.cci
+.sfdx
+.localdevserver/
+.sf
+/src.orig
+/src
+force-app/main/default/profiles
+
+# LWC VSCode autocomplete
+**/lwc/jsconfig.json
+
+# LWC Jest coverage reports
+coverage/
+
+# LWC dev demos
+**/lwc/devDemo*
+
+# Scratch org configs
+/config/*.json
+
+# Python
+*.pyc
+__pycache__
+
+# Robot Framework results
+robot/blackthorn-base/results/
+
+# Editors
+*.sublime-project
+*.sublime-workspace
+.vscode
+.idea
+.project
+.settings
+
+# Misc
+.DS_Store
+manifest/
+remoteSiteSettings
+node_modules
+.vim-force.com

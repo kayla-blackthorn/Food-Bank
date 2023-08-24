@@ -1,0 +1,26 @@
+<template>
+    <lightning-modal-header label={description}></lightning-modal-header>
+    <template if:true={saving}>
+        <lightning-spinner alternative-text="Saving" size="small"></lightning-spinner>
+    </template>
+    <template if:true={loading}>
+        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+    </template>
+    <lightning-record-edit-form
+        object-api-name={objectApiName}
+        record-id={formId}
+        onload={handleLoaded}
+        onsubmit={handleSubmit}
+        onsuccess={handleSuccess}
+        onerror={handleError}
+    >
+        <lightning-modal-body>
+            <lightning-messages></lightning-messages>
+            <lightning-input-field field-name={nameField}> </lightning-input-field>
+        </lightning-modal-body>
+        <lightning-modal-footer>
+            <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_small"></lightning-button>
+            <lightning-button variant="brand" label={saveButtonLabel} type="submit"></lightning-button>
+        </lightning-modal-footer>
+    </lightning-record-edit-form>
+</template>

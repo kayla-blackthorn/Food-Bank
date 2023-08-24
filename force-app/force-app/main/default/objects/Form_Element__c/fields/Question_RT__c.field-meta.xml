@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Question_RT__c</fullName>
+    <description>Supplemental question information can be used to show terms and conditions or other rich text for a question.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Supplemental question information can be used to show terms and conditions or other rich text for a question.</inlineHelpText>
+    <label>Supplemental Question Information</label>
+    <length>131072</length>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Html</type>
+    <visibleLines>15</visibleLines>
+</CustomField>

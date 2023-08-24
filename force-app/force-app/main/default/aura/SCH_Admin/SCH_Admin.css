@@ -1,0 +1,40 @@
+.THIS .panel-layout {
+    min-height: calc(100vh - 150px);
+    height: calc(100% - 150px);
+}
+
+.THIS.panel,
+.THIS .white-background {
+    background-color: #ffffff;
+}
+
+.THIS .shade {
+    background-color: #54698d;
+}
+
+.THIS .is-selected {
+    background-color: #54698d;
+}
+
+.THIS .left-panel-controls {
+    background-color: #00396b;
+    min-height: -webkit-fill-available;
+    height: 100%;
+}
+
+.THIS .Textey-Message {
+    position: absolute;
+    top: 0px;
+}
+
+.THIS .panel-icon {
+    width: 60px;
+}
+
+.THIS .panel-section {
+    width: calc(100% - 60px);
+}
+
+.THIS .panel-mainsection {
+    width: 100%;
+}

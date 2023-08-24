@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Publish_To_Platform_Requested_At__c</fullName>
+    <description>The date/time the changes to this record were sent to update the record.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The date/time the changes to this record were sent to update the record.</inlineHelpText>
+    <label>Last Publish To Platform Requested At</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

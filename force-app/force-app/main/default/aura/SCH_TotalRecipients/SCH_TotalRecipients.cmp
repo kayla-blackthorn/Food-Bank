@@ -1,0 +1,61 @@
+<aura:component controller="SCH_SmartSchedulerController" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="String" name="selectScheduleAttendeesLabel" default="" />
+    <aura:attribute type="String" name="selectScheduleAttendees" />
+    <aura:attribute type="String" name="selectScheduleType" default="sms" />
+    <aura:attribute type="String" name="fieldNameToShow" />
+    <aura:attribute type="String" name="nameField" />
+    <aura:attribute type="String" name="nameFieldToReplace" />
+    <aura:attribute type="String" name="filter" />
+    <aura:attribute type="String" name="iconLabel" />
+    <aura:attribute type="boolean" name="isShowViewRecipientsModal" default="false" />
+    <aura:attribute type="List" name="data" />
+    <aura:attribute type="List" name="columns" />
+    <aura:attribute type="String" name="selectedRelatedObjectFieldAPIName" />
+
+    <!--handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+        class="slds-modal slds-fade-in-open" aura:id="sectionTotalRecipients">
+        <div class="slds-modal__container">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                onclick="{!c.handleHideTotalRecipients}">
+                <lightning:icon iconName="utility:close" variant="inverse" size="small" />
+                <span class="slds-assistive-text">Cancel and close</span>
+            </button>
+            <div class="slds-modal__header">
+                <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                    {!(not(empty(v.selectScheduleAttendeesLabel))?(v.selectScheduleAttendeesLabel):'')}
+                </h1>
+                <p>Recipients</p>
+            </div>
+            <div class="slds-modal__content slds-p-top_medium slds-p-bottom_medium custom-modal_body"
+                id="modal-content-id-1">
+                <aura:if isTrue="{!v.actionCnt > 0}">
+                    <lightning:spinner variant="brand" size="medium" class="spinnerClass" />
+                </aura:if>
+                <aura:if isTrue="{!v.columns.length>0}">
+                    <div class="datatable-panel">
+                        <lightning:datatable data="{! v.data }" columns="{! v.columns }" keyField="Id"
+                            hideCheckboxColumn="true" showRowNumberColumn="true" />
+                    </div>
+                </aura:if>
+
+                <aura:if isTrue="{!v.data.length==0}">
+                    <div style="background: #f3f3f3;">
+                        <div class="slds-text-align_center slds-p-around_medium">
+                            <p>No Recipients to display</p>
+                        </div>
+                    </div>
+                </aura:if>
+            </div>
+            <div class="slds-modal__footer">
+                <button class="slds-button slds-button_neutral" onclick="{!c.handleHideTotalRecipients}">Cancel</button>
+            </div>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+</aura:component>

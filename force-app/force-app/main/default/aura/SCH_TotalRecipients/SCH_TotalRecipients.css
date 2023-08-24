@@ -1,0 +1,38 @@
+.THIS .custom-modal_body {
+    position: relative !important;
+}
+.THIS .slds-icon-utility-info{
+    position: relative;
+    display: inline-block;
+    margin-left: -30px;
+}
+.THIS .slds-icon-utility-info::before {
+    visibility: hidden;
+    content: '';
+    position: relative;
+    display: inline;
+    width: 0px;
+    left: 50%;
+    bottom: 0;
+    border: 15px solid transparent;
+    border-bottom: 0;
+    border-top: 15px solid rgb(3, 45, 96);
+    transform: translate(-50%, calc(100% + 5px));
+    margin-top: 10px;
+}
+.THIS .slds-icon-utility-info::after{
+    visibility: hidden;
+    content: "";
+    background-color: rgb(3, 45, 96);
+    color: #fff;
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 6px;
+    position: fixed;
+    z-index: 1;
+    margin-top: -30px;
+    margin-left: -20px;
+}
+.THIS .slds-icon_container:hover::after, .THIS .slds-icon_container:hover::before {
+    visibility: unset!important;
+}

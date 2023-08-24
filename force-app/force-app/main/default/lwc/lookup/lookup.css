@@ -1,0 +1,10 @@
+.no-record-found div{
+    cursor: auto;
+}
+.slds-has-error .slds-form-element__help{
+    display: block!important;
+}
+.slds-has-error .slds-dropdown-trigger .slds-dropdown{
+    position: absolute;
+    top: 32px;
+}

@@ -1,0 +1,54 @@
+<aura:component controller="SCH_SmartSchedulerController" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="Integer" name="currentStep" default="0" />
+    <aura:attribute type="String" name="selectedActiveSectionName" default="" />
+    <aura:attribute type="String" name="phoneOrEmailValues" default="" />
+    <aura:attribute type="String" name="selectedTestRecordId" default="" />
+    <aura:attribute type="String" name="selectedTestRecordName" default="" />
+    <aura:attribute type="String" name="lkp_sobjectApiName" default="" />
+    <aura:attribute type="String" name="lkp_resultPrimaryField" default="" />
+    <aura:attribute type="String" name="lkp_resultPrimaryFieldReference" default="" />
+    <aura:attribute type="String" name="lkp_searchByField" default="" />
+    <aura:attribute type="String" name="lkp_resultSecondaryField" default="" />
+    <aura:attribute type="String" name="lkp_filter" default="" />
+    <aura:attribute type="List" name="associateReferencedRecordOptions" default="[]" />
+    <aura:attribute type="Map" name="scheduleObj" default="{}" />
+    <aura:attribute type="Boolean" name="allowLookup" default="false" />
+    <aura:attribute type="Map" name="helpLinks" default="{}" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}" />
+
+    <aura:method name="resetInit" action="{!c.handleResetInit}" description="used to reset Send Test form" />
+
+    <!--markup-->
+    <aura:if isTrue="{!not(empty(v.spinner))}">
+        <lightning:spinner aura:id="spinner" alternativeText="Loading" size="large" class="slds-is-fixed" />
+    </aura:if>
+    <lightning:layout multipleRows="true">
+        <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+            <lightning:input value="{!v.phoneOrEmailValues}"
+                label="{!(v.scheduleObj.Action=='SMS'?'Test Phone Number(s)':'Test Email(s)')}" required="true"
+                fieldLevelHelp="{!v.scheduleObj.Action=='SMS' ? v.helpLinks.test_info_sms : v.helpLinks.test_info_email}"
+                aura:id="phoneOrEmailValues" />
+        </lightning:layoutItem>
+        <aura:if isTrue="{!v.allowLookup}">
+            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+                <c:lookup aura:id="lookup_TestRecord"
+                    sobjectApiName="{!v.lkp_sobjectApiName}"
+                    label="Test Record" placeholder="Search Recipients..." required="true" autoload="true"
+                    searchByField="{!v.lkp_searchByField}"
+                    resultPrimaryField="{!v.lkp_resultPrimaryFieldReference}"
+                    resultSecondaryField="{!v.lkp_resultSecondaryField}" filter="{!v.lkp_filter}"
+                    onchange="{!c.handleRecordSelected}">
+                </c:lookup>
+            </lightning:layoutItem>
+        </aura:if>
+        <lightning:layoutItem size="12" flexibility="auto" padding="around-small" class="slds-text-align_right">
+            <lightning:button label="Previous" onclick="{!c.handlePrevious}"></lightning:button>
+            <lightning:button label="Send Test" variant="brand" onclick="{!c.handleSendTest}"></lightning:button>
+        </lightning:layoutItem>
+    </lightning:layout>
+
+</aura:component>

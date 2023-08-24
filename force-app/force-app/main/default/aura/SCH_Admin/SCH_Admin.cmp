@@ -1,0 +1,212 @@
+<aura:component access="GLOBAL" implements="force:appHostable" controller="SCH_CtrlLtngAdmin" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="String" name="currentPage" default="account-info" />
+    <aura:attribute type="String" name="uiTheme" default="" />
+    <aura:attribute type="Boolean" name="showBack" default="false" />
+    <aura:attribute type="Boolean" name="redierctToBack" default="false" />
+    <aura:attribute type="Boolean" name="redierctToBackTrial" default="false" />
+    <aura:attribute type="Object" name="account" default="{}" />
+    <aura:attribute type="Object" name="packageData" default="{}" />
+    <aura:attribute type="Boolean" name="isAuthUser" default="false" />
+
+    <!-- event handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <!-- dependencies -->
+    <aura:dependency resource="markup://c:SCH_AdminAccountInfo" />
+
+    <!-- component markup -->
+    <div class="slds-page-header">
+        <h1 class="slds-text-title_caps">
+            <aura:if isTrue="{!and(v.showBack,v.uiTheme == 'Theme3')}">
+                <lightning:buttonIcon iconName="utility:back" onclick="{!c.handleBack}"
+                    alternativeText="Back to home" />
+            </aura:if>
+            Smart Scheduler Admin
+        </h1>
+    </div>
+    <div class="panel ">
+        <lightning:layout class="panel-layout white-background">
+            <aura:if
+                isTrue="{!v.packageData.isScheduleFeatureEnabled &amp;&amp; (v.packageData.btSchedulePermissions.isBTScheduleAdmin || (!v.packageData.btSchedulePermissions.isBTScheduleAdmin &amp;&amp; v.packageData.hasAccountCredentials))}">
+                <lightning:layoutItem class="panel-icon">
+                    <div class="slds-border_right left-panel-controls">
+                        <ul>
+                            <li id="account-info" aura:id="account-info"
+                                class="{!'slds-p-horizontal_medium slds-p-top_large slds-p-bottom_small ' +(v.currentPage=='account-info'? 'is-selected':'')}"
+                                onmouseover="{!c.handleMouseEnterNav}" onmouseout="{!c.handleMouseOutNav}"
+                                onclick="{!c.handleNavClick}">
+                                <div style="position:relative">
+                                    <a href="">
+                                        <lightning:icon iconName="utility:open_folder" size="small" variant="inverse" />
+                                    </a>
+                                    <div aura:id="account-info-tooltip"
+                                        class="slds-popover slds-popover_tooltip slds-nubbin_left slds-hide"
+                                        role="tooltip" id="help" style="position:absolute;top:0;left:61px;width:200px;">
+                                        <div class="slds-popover__body">General Account Info</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- validating org is having credentials, user is authenticated, and user is active -->
+                            <aura:if
+                                isTrue="{!v.packageData.hasAccountCredentials &amp;&amp; and(v.account.isUserAuthenticated, v.account.isAuthenticatedUserActive)}">
+                                <li id="scheduler-info" aura:id="scheduler-info"
+                                    class="{!'slds-p-horizontal_medium slds-p-vertical_small ' +(v.currentPage=='scheduler-info'? 'is-selected':'')}"
+                                    onmouseover="{!c.handleMouseEnterNav}" onmouseout="{!c.handleMouseOutNav}"
+                                    onclick="{!c.handleNavClick}">
+                                    <div style="position:relative">
+                                        <a href="">
+                                            <lightning:icon iconName="utility:new_direct_message" size="small"
+                                                variant="inverse" />
+                                        </a>
+                                        <div aura:id="scheduler-info-tooltip"
+                                            class="slds-popover slds-popover_tooltip slds-nubbin_left slds-hide"
+                                            role="tooltip" id="help"
+                                            style="position:absolute;top:0;left:61px;width:200px;">
+                                            <div class="slds-popover__body">
+                                                {!$Label.c.SCH_SS_action_create_schedule_section_title}</div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </aura:if>
+                            <li id="configuration-settings" aura:id="configuration-settings"
+                                class="{!'slds-p-horizontal_medium slds-p-vertical_small ' +(v.currentPage=='configuration-settings'? 'is-selected':'')}"
+                                onmouseover="{!c.handleMouseEnterNav}" onmouseout="{!c.handleMouseOutNav}"
+                                onclick="{!c.handleNavClick}">
+                                <div style="position:relative">
+                                    <a href="">
+                                        <lightning:icon iconName="utility:setup" size="small" variant="inverse" />
+                                    </a>
+                                    <div aura:id="configuration-settings-tooltip"
+                                        class="slds-popover slds-popover_tooltip slds-nubbin_left slds-hide"
+                                        role="tooltip" id="help" style="position:absolute;top:0;left:61px;width:200px;">
+                                        <div class="slds-popover__body">Configuration Settings</div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </lightning:layoutItem>
+            </aura:if>
+            <lightning:layoutItem aura:id="mainContent"
+                class="{!'white-background ' + if(or(v.packageData.isScheduleFeatureEnabled == false, and(and(v.packageData.isScheduleFeatureEnabled == false, v.packageData.btSchedulePermissions.isBTScheduleAdmin == false), or(v.packageData.hasAccountCredentials == false, and(v.account.isUserAuthenticated, v.account.isAuthenticatedUserActive == false)))), ' panel-mainsection ', ' panel-section ')}">
+                <lightning:layout multipleRows="true">
+                    <aura:if
+                        isTrue="{!or(v.packageData.isScheduleFeatureEnabled == false, and(and(v.packageData.isScheduleFeatureEnabled == false, v.packageData.btSchedulePermissions.isBTScheduleAdmin == false), or(v.packageData.hasAccountCredentials == false, and(v.account.isUserAuthenticated, v.account.isAuthenticatedUserActive == false))))}">
+                        <lightning:layoutItem size="12">
+                            <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                                <span class="slds-assistive-text">warning</span>
+                                <lightning:icon iconName="utility:warning" class="slds-m-right_x-small"
+                                    alternativeText="setup incomplete" title="" size="x-small" />
+                                <h2 class="textey-d-initial">
+                                    Smart Scheduler feature is not activated, kindly contact
+                                    <aura:if isTrue="{!v.packageData.btSchedulePermissions.isBTScheduleAdmin == true}">
+                                        <a href="{!v.packageData.helpLinks.BT_Support_Team}" target="_blank">Blackthorn
+                                            Support</a>.
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.packageData.btSchedulePermissions.isBTScheduleAdmin == false}">
+                                        your System Administrator.
+                                    </aura:if>
+                                </h2>
+                            </div>
+                        </lightning:layoutItem>
+                    </aura:if>
+                    <aura:if isTrue="{!v.packageData.isScheduleFeatureEnabled}">
+                        <lightning:layoutItem size="12">
+                            <!-- alert notification when User is not setup -->
+                            <aura:if
+                                isTrue="{!and(or(or(empty(v.account), !v.account.accountConfigured), v.account.accountConfigured), v.packageData.btSchedulePermissions.isBTScheduleAdmin == false)}">
+                                <aura:if
+                                    isTrue="{!or(!v.account.isUserAuthenticated, v.account.isAuthenticatedUserActive != true)}">
+                                    <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-vertical_xxx-small"
+                                        role="alert">
+                                        <span class="slds-assistive-text">error</span>
+                                        <lightning:icon iconName="utility:warning" class="slds-m-right_x-small"
+                                            alternativeText="setup incomplete" title="" size="x-small" />
+                                        <h2 class="textey-d-initial">
+                                            {!v.packageData.helpLinks.btschedule_not_configure}
+                                        </h2>
+                                    </div>
+                                </aura:if>
+                            </aura:if>
+                            <!-- alert notification when authenticated User is not active -->
+                            <aura:if
+                                isTrue="{!and(and(v.account.isUserAuthenticated, v.account.isAuthenticatedUserActive!=true), v.packageData.btSchedulePermissions.isBTScheduleAdmin)}">
+                                <div class="slds-notify slds-notify_alert slds-alert_error slds-m-vertical_xxx-small"
+                                    role="alert">
+                                    <span class="slds-assistive-text">error</span>
+                                    <lightning:icon iconName="utility:error" class="slds-m-right_x-small"
+                                        alternativeText="setup incomplete" title="" size="x-small" />
+                                    <h2 class="textey-d-initial">
+                                        <aura:if isTrue="{!v.account.isAuthenticatedUserActive!=true}">
+                                            Authenticated user is inactive, please authorise with an active user
+                                        </aura:if>
+                                        <aura:if isTrue="{!v.currentPage != 'scheduler-info'}">
+                                            &nbsp;<a href="javascript:void(0);"
+                                                onclick="{!c.handleAuthenticationClick}">click here</a>
+                                        </aura:if>
+                                    </h2>
+                                </div>
+                            </aura:if>
+
+                            <!-- alert notification for Account setup, upgradation -->
+                            <aura:if
+                                isTrue="{!and(and(v.account, or(v.redierctToBack, v.redierctToBackTrial)), and(v.packageData.btSchedulePermissions.isBTScheduleAdmin,v.packageData.account.accountConfigured))}">
+                                <div>
+                                    <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                                        <span class="slds-assistive-text">warning</span>
+                                        <lightning:icon iconName="utility:warning" class="slds-m-right_x-small"
+                                            alternativeText="setup incomplete" title="" size="x-small" />
+                                        <h2 class="textey-d-initial">
+                                            <aura:if isTrue="{!v.redierctToBack}">
+                                                <aura:if isTrue="{!v.currentPage!='account-info'}">
+                                                    Your account setup needs attention, click
+                                                    &nbsp;<a href="javascript:void(0);"
+                                                        onclick="{!c.manageAuthenticatedUser}">here</a>&nbsp;
+                                                    to resolve.
+                                                    <aura:set attribute="else">
+                                                        Your account setup needs attention, complete the steps.
+                                                    </aura:set>
+                                                </aura:if>
+                                                <aura:set attribute="else">
+                                                    <aura:if isTrue="{!v.currentPage!='account-info'}">
+                                                        One step remaining, click
+                                                        &nbsp;<a href="javascript:void(0);"
+                                                            onclick="{!c.manageAuthenticatedUser}">here</a>&nbsp;
+                                                        to completeyour account setup by upgrading.
+                                                        <aura:set attribute="else">
+                                                            One step remaining, complete your account setup by
+                                                            upgrading.
+                                                        </aura:set>
+                                                    </aura:if>
+                                                </aura:set>
+                                            </aura:if>
+                                        </h2>
+                                    </div>
+                                </div>
+                            </aura:if>
+                        </lightning:layoutItem>
+                    </aura:if>
+                    <aura:if
+                        isTrue="{! and(v.packageData.isScheduleFeatureEnabled, or(v.packageData.btSchedulePermissions.isBTScheduleAdmin, and(and(!v.packageData.btSchedulePermissions.isBTScheduleAdmin, v.packageData.hasAccountCredentials), v.account.isAuthenticatedUserActive)))}">
+                        <lightning:layoutItem size="12">
+                            <aura:if isTrue="{!v.currentPage=='account-info'}">
+                                <c:SCH_AdminAccountInfo currentPage="{!v.currentPage}" packageData="{!v.packageData}"
+                                    aura:id="adminAccountInfo" />
+                            </aura:if>
+                            <aura:if isTrue="{!v.currentPage=='scheduler-info'}">
+                                <c:SCH_AdminScheduleJobs currentPage="{!v.currentPage}" account="{!v.account}" />
+                            </aura:if>
+                            <aura:if isTrue="{!v.currentPage=='configuration-settings'}">
+                                <c:SCH_ConfigurationSettings currentPage="{!v.currentPage}" account="{!v.account}"
+                                    packageData="{!v.packageData}" />
+                            </aura:if>
+                        </lightning:layoutItem>
+                    </aura:if>
+                </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+</aura:component>

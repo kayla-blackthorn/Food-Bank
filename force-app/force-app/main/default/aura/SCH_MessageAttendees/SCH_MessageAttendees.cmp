@@ -1,0 +1,371 @@
+<aura:component controller="SCH_SmartSchedulerController" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="String" name="relatedRecordId" default="" />
+    <aura:attribute type="String" name="selectedSendSMSFrom" default="" />
+    <aura:attribute type="String" name="selectedSendSMSTo" default="" />
+    <aura:attribute type="String" name="selectedAttendeeFilter" default="" />
+    <aura:attribute type="String" name="selectedAttendeeFilterCriteria" default="" />
+    <aura:attribute type="List" name="sendSMSFromOptions" default="[]" />
+    <aura:attribute type="List" name="sendSMSToOptions" default="[]" />
+    <aura:attribute type="List" name="attendeeFilterOptions" default="[]" />
+    <aura:attribute type="String" name="selectScheduleAttendees" />
+    <aura:attribute type="String" name="selectScheduleType" default="sms" />
+    <aura:attribute type="Integer" name="totalRecipients" default="0" />
+    <aura:attribute type="String" name="selectedFromEmailAddress" default="" />
+    <aura:attribute type="List" name="fromEmailAddressOptions" default="[]" />
+    <aura:attribute type="String" name="selectedToEmail" default="" />
+    <aura:attribute type="List" name="sendToEmailOptions" default="[]" />
+    <aura:attribute type="map" name="mapSobjectFieldsWithType" />
+    <aura:attribute type="String" name="selectedActiveSectionName" default="" />
+    <aura:attribute type="String" name="selectedAttendeeFilterLabel" default="" />
+    <aura:attribute type="List" name="selectedAttendeeFilterValue" default="[]" />
+    <aura:attribute type="List" name="selectedAttendeeFilterOptions" default="[]" />
+    <aura:attribute type="boolean" name="isShowViewRecipientsModal" default="false" />
+    <aura:attribute type="String" name="selectScheduleAttendeesLabel" default="Event Attendees" />
+    <aura:attribute type="String" name="filter" />
+    <aura:attribute type="Map" name="scheduleObj" default="{}" />
+    <aura:attribute type="Map" name="eventInfo" default="{}" />
+    <aura:attribute type="Integer" name="smsBalance" default="0" />
+    <aura:attribute type="Integer" name="emailBalance" default="0" />
+    <aura:attribute type="Integer" name="currentStep" default="0" />
+    <aura:attribute type="List" name="scheduleDateTimeOptions" default="[]" />
+    <aura:attribute type="Boolean" name="allowSMS" default="false" />
+    <aura:attribute type="Boolean" name="allowFieldSelection" default="false" />
+    <aura:attribute type="SCH_Account" name="account" />
+    <aura:attribute type="Map" name="helpLinks" default="{}" />
+
+    <!--handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.mapSobjectFieldsWithType}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.selectScheduleType}" action="{!c.handleResetAccordSections}" />
+    <aura:handler name="change" value="{!v.selectedActiveSectionName}" action="{!c.handleScheduleSelectedAccordin}" />
+    <aura:handler name="change" value="{!v.selectedAttendeeFilterValue}" action="{!c.handleAttendeeFilterChange}" />
+
+    <aura:method name="validateScheduleForm" action="{!c.handleValidatedForm}" description="used to validate form" />
+    <!--markup-->
+    <aura:if isTrue="{!not(empty(v.spinner))}">
+        <lightning:spinner aura:id="spinner" alternativeText="Loading" size="large" class="slds-is-fixed" />
+    </aura:if>
+    <lightning:layout multipleRows="true">
+        <aura:if isTrue="{!v.currentStep >= 1}">
+            <aura:if
+                isTrue="{!(v.scheduleObj.Action == 'SMS'?(v.smsBalance&#60;v.scheduleObj.Recipient):(v.emailBalance&#60;v.scheduleObj.Recipient))}">
+                <lightning:layoutItem size="12" flexibility="auto" class="slds-no-padding">
+                    <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-vertical_xxx-small"
+                        role="alert">
+                        <span class="slds-assistive-text">error</span>
+                        <lightning:icon iconName="utility:warning" class="slds-m-right_x-small"
+                            alternativeText="setup incomplete" title="" size="x-small" />
+                        <h2 class="textey-d-initial">
+                            Insufficient Balance
+                        </h2>
+                    </div>
+                </lightning:layoutItem>
+            </aura:if>
+            <aura:if isTrue="{!and(v.selectScheduleType=='Email', v.scheduleObj.isEmailVerified == false)}">
+                <lightning:layoutItem size="12" flexibility="auto" class="slds-no-padding">
+                    <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-vertical_xxx-small"
+                        role="alert">
+                        <span class="slds-assistive-text">error</span>
+                        <lightning:icon iconName="utility:warning" class="slds-m-right_x-small"
+                            alternativeText="alert" size="x-small" />
+                        <h2 class="textey-d-initial">
+                            {!v.helpLinks.email_not_accessible.banner_info}
+                        </h2>
+                    </div>
+                </lightning:layoutItem>
+            </aura:if>
+            <lightning:layoutItem size="12" flexibility="auto" class="slds-no-padding slds-box slds-m-top_small">
+                <lightning:accordion aura:id="accordion" allowMultipleSectionsOpen="true" activeSectionName=""
+                    onsectiontoggle="{! c.handleSectionToggle }">
+                    <lightning:accordionSection name="Recipients" label="Recipients">
+                        <lightning:layout multipleRows="true">
+                            <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+                                <lightning:input name="input1" label="Schedule Name" required="true" aura:id="name"
+                                    value="{!v.scheduleObj.Name}" fieldLevelHelp="{!$Label.c.SCH_Schedule_Name}" />
+                            </lightning:layoutItem>
+                            <aura:if isTrue="{!v.selectScheduleType=='SMS'}">
+                                <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+                                    <lightning:combobox label="Send SMS From" value="{!v.scheduleObj.SMS_From_Number}"
+                                        options="{! v.sendSMSFromOptions}" required="true" aura:id="smsfrom"
+                                        disabled="{!v.sendSMSFromOptions.length==0}"
+                                        fieldLevelHelp="{!$Label.c.SCH_From_Number}" />
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+                                    <lightning:combobox label="Send SMS To" value="{!v.scheduleObj.SMS_To_Number}"
+                                        options="{! v.sendSMSToOptions}" required="true" aura:id="smsto"
+                                        disabled="{!v.sendSMSToOptions.length==0}"
+                                        fieldLevelHelp="{!$Label.c.SCH_TO_Number}" onchange="{!c.handleToEmailChange}"/>
+                                </lightning:layoutItem>
+                            </aura:if>
+                            <aura:if isTrue="{!v.selectScheduleType=='Email'}">
+                                <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+                                    <label class="slds-form-element__label slds-no-flex" for="fromemailaddress">
+                                        <abbr class="slds-required" title="required">* </abbr>
+                                        From Email Address
+                                        <lightning:helptext content="{!(v.fromEmailAddressOptions.length==0?$Label.c.SCH_No_From_Address:$Label.c.SCH_From_Address)}"/>
+                                        <aura:if isTrue="{!v.scheduleObj.isEmailVerified == false}">
+                                            <lightning:helptext iconName="utility:warning" class="slds-icon-text-warning"
+                                                content="{!v.helpLinks.email_not_accessible.inline_info}" />
+                                        </aura:if>
+                                    </label>
+                                    <lightning:combobox label="From Email Address" onchange="{!c.handleFromEmailAddressChange }"
+                                        value="{!v.scheduleObj.Email_From_Address}" variant="label-hidden"
+                                        options="{! v.fromEmailAddressOptions}" required="true"
+                                        aura:id="fromemailaddress" disabled="{!v.fromEmailAddressOptions.length==0}"/>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+                                    <lightning:combobox label="To Email" value="{!v.scheduleObj.Email_To_Address}"
+                                        options="{! v.sendToEmailOptions}" required="true" aura:id="toemail"
+                                        disabled="{!v.sendToEmailOptions.length==0}" onchange="{!c.handleToEmailChange}"/>
+                                </lightning:layoutItem>
+                            </aura:if>
+                            <aura:if isTrue="{!and(v.scheduleObj.AssociateWithReferencedRecordOptions, v.scheduleObj.AssociateWithReferencedRecordOptions.length>0)}">
+                                <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+                                    <label class="slds-form-element__label slds-no-flex" for="fromemailaddress">
+                                        Associated Activity with
+                                        <aura:if isTrue="{!v.helpLinks.associated_parent_info}">
+                                            <lightning:helptext iconName="utility:info" class="slds-icon-text-info"
+                                                content="{!v.helpLinks.associated_parent_info.activity_linked_to}" />
+                                        </aura:if>
+                                    </label>
+                                    <lightning:radioGroup name="Associate_With_Referenced_Record"
+                                        label="Associated Activity with"
+                                        options="{!v.scheduleObj.AssociateWithReferencedRecordOptions}"
+                                        value="{!v.scheduleObj.Associate_With_Referenced_Record}" type="radio"
+                                        variant="label-hidden" onchange="{!c.handleAssociateReferenceChange}" />
+                                </lightning:layoutItem>
+                            </aura:if>
+                            <aura:if
+                                isTrue="{!v.relatedRecordId != null &amp;&amp; v.relatedRecordId != '' &amp;&amp; v.relatedRecordId != undefined}">
+                                <aura:if
+                                    isTrue="{!v.selectScheduleAttendees == 'conference360__Attendee__c' || v.selectScheduleAttendees == 'conference360__Session_Attendee__c'}">
+                                    <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+                                        <label class="slds-form-element__label">
+                                            Attendee Filter
+                                            <c:knowledgeArticle linkURL="{!v.scheduleObj.attendee_registration_status}"
+                                                className="slds-float_right custom-filter_style" />
+                                        </label>
+                                        <lightning:combobox label="Attendee Filter" value="{!v.selectedAttendeeFilter}"
+                                            options="{! v.attendeeFilterOptions}"
+                                            onchange="{!c.handleAttendeeFilterBoxChange}"
+                                            disabled="{!v.attendeeFilterOptions.length==0}" variant="label-hidden" />
+                                    </lightning:layoutItem>
+                                </aura:if>
+                                <aura:set attribute="else">
+                                    <!-- Base SObject criteria filter -->
+                                    <lightning:layoutItem size="12" class="slds-p-around_small slds-border_bottom">
+                                        <lightning:layout multipleRows="true">
+                                            <lightning:layoutItem size="12" class="filter-panel">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label fs-16">
+                                                        Criteria for <b>{!v.scheduleObj.Base_Object_Label}</b>
+                                                    </label>
+                                                    <div class="slds-form-element__control">
+                                                        <lightning:input aura:id="noCriteria" type="radio"
+                                                            name="baseObjectCriteria" label="No criteria"
+                                                            class="display-inline"
+                                                            checked="{!v.scheduleObj.baseObjectCriteria == 'noCriteria'}"
+                                                            onchange="{!c.handleCreteriaChanged}" />
+                                                        <lightning:input aura:id="matchCriteria" type="radio"
+                                                            name="baseObjectCriteria" label="Define Criteria"
+                                                            class="display-inline"
+                                                            checked="{!v.scheduleObj.baseObjectCriteria == 'matchCriteria'}"
+                                                            onchange="{!c.handleCreteriaChanged}" />
+                                                    </div>
+                                                </div>
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem size="12">
+                                                <aura:if
+                                                    isTrue="{!v.scheduleObj.baseObjectCriteria == 'matchCriteria'}">
+                                                    <lightning:layout multipleRows="true">
+                                                        <lightning:layoutItem size="12" mediumDeviceSize="8"
+                                                            flexibility="auto" padding="around-small">
+                                                            <c:SCH_sObjectFilterBuilder
+                                                                sObjectName="{!v.scheduleObj.Base_Object}"
+                                                                aura:id="sObjectFilterBase"
+                                                                filterData="{!v.scheduleObj.baseObjectCriteriaFilters}"
+                                                                onchange="{!c.handleChangesObjectFilterBase}" />
+                                                        </lightning:layoutItem>
+                                                        <lightning:layoutItem size="12" mediumDeviceSize="4"
+                                                            flexibility="auto" class="slds-show_medium">
+                                                        </lightning:layoutItem>
+                                                    </lightning:layout>
+                                                </aura:if>
+                                            </lightning:layoutItem>
+                                        </lightning:layout>
+                                    </lightning:layoutItem>
+                                    <!-- Related SObject criteria filter -->
+                                    <aura:if isTrue="{!not(empty(v.scheduleObj.Related_Object_Relationship_Name))}">
+                                        <lightning:layoutItem size="12" class="slds-p-around_small slds-border_bottom">
+                                            <lightning:layout multipleRows="true">
+                                                <lightning:layoutItem size="12" class="filter-panel">
+                                                    <div class="slds-form-element">
+                                                        <label class="slds-form-element__label fs-16">
+                                                            Criteria for
+                                                            <b>{!v.scheduleObj.Related_Object_Label}</b>
+                                                        </label>
+                                                        <div class="slds-form-element__control">
+                                                            <lightning:input aura:id="noCriteria" type="radio"
+                                                                name="relatedObjectCriteria" label="No criteria"
+                                                                class="display-inline"
+                                                                checked="{!v.scheduleObj.relatedObjectCriteria == 'noCriteria'}"
+                                                                onchange="{!c.handleCreteriaChanged}" />
+                                                            <lightning:input aura:id="matchCriteria" type="radio"
+                                                                name="relatedObjectCriteria" label="Define Criteria"
+                                                                class="display-inline"
+                                                                checked="{!v.scheduleObj.relatedObjectCriteria == 'matchCriteria'}"
+                                                                onchange="{!c.handleCreteriaChanged}" />
+                                                        </div>
+                                                    </div>
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="12">
+                                                    <aura:if
+                                                        isTrue="{!v.scheduleObj.relatedObjectCriteria == 'matchCriteria'}">
+                                                        <lightning:layout multipleRows="true">
+                                                            <lightning:layoutItem size="12" mediumDeviceSize="8"
+                                                                flexibility="auto" padding="around-small">
+                                                                <c:SCH_sObjectFilterBuilder
+                                                                    sObjectName="{!v.scheduleObj.Related_Object}"
+                                                                    aura:id="sObjectFilterRelated"
+                                                                    filterData="{!v.scheduleObj.relatedObjectCriteriaFilters}"
+                                                                    onchange="{!c.handleChangesObjectFilterRelated}" />
+                                                            </lightning:layoutItem>
+                                                            <lightning:layoutItem size="12" mediumDeviceSize="4"
+                                                                flexibility="auto" class="slds-show_medium">
+                                                            </lightning:layoutItem>
+                                                        </lightning:layout>
+                                                    </aura:if>
+                                                </lightning:layoutItem>
+                                            </lightning:layout>
+                                        </lightning:layoutItem>
+                                    </aura:if>
+                                </aura:set>
+                            </aura:if>
+                            <aura:if
+                                isTrue="{!and(v.selectedAttendeeFilter!=null, v.selectedAttendeeFilter!='', v.selectedAttendeeFilter!=undefined)}">
+                                <lightning:layoutItem size="12" flexibility="auto" padding="around-small">
+                                    <c:SCH_multiselect label="{!v.selectedAttendeeFilterLabel}"
+                                        options="{!v.selectedAttendeeFilterOptions}" inpId="fromSelect"
+                                        placeholder="{!v.selectedAttendeeFilterLabel}" noInfoText="No Match Found"
+                                        selectedItems="{!v.selectedAttendeeFilterValue}" isLabelBold="false"
+                                        masterSelect="true" isMultiSelect="true" selectAll="false"
+                                        disabled="{!v.selectedAttendeeFilterOptions.length == 0}"
+                                        aura:id="selectedAttendeeFilterOptions" />
+                                </lightning:layoutItem>
+                            </aura:if>
+                            <lightning:layoutItem size="6" flexibility="auto" padding="around-small">
+                                Total Recipients<br />
+                                <a href="javascript:void(0);"
+                                    onclick="{!c.handleViewTotalRecipients}">{!v.scheduleObj.Recipient}</a>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="6" flexibility="auto" padding="around-small">
+                                {!v.scheduleObj.Action} Balance<br />
+                                <aura:if isTrue="{!v.scheduleObj.Action == 'SMS'}">
+                                    {!v.smsBalance}
+                                    <aura:set attribute="else">
+                                        {!v.emailBalance}
+                                    </aura:set>
+                                </aura:if>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="12" flexibility="auto" padding="around-small"
+                                class="slds-text-align_right">
+                                <button class="slds-button slds-button_brand"
+                                    onclick="{!c.handleSubmitRecipients}">Next</button>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:accordionSection>
+                </lightning:accordion>
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!v.currentStep >= 2}">
+            <lightning:layoutItem size="12" flexibility="auto" class="slds-no-padding slds-box slds-m-top_small">
+                <lightning:accordion aura:id="accordion_schedule" allowMultipleSectionsOpen="true" activeSectionName=""
+                    onsectiontoggle="{! c.handleSectionToggle }">
+                    <lightning:accordionSection name="Schedule" label="Schedule">
+                        <c:SCH_Schedule
+                            isShowWarningMsg="{!v.relatedRecordId != null &amp;&amp; v.relatedRecordId != '' &amp;&amp; v.relatedRecordId != undefined}"
+                            selectScheduleAttendees="{!v.selectScheduleAttendees}"
+                            selectedActiveSectionName="{!v.selectedActiveSectionName}" scheduleObj="{!v.scheduleObj}"
+                            eventInfo="{!v.eventInfo}" isExecuteNow="{!v.scheduleObj.Execute_Now}" aura:id="schedule"
+                            currentStep="{!v.currentStep}" dateTimeFields="{!v.scheduleDateTimeOptions}">
+                        </c:SCH_Schedule>
+                    </lightning:accordionSection>
+                </lightning:accordion>
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!v.currentStep >= 3}">
+            <lightning:layoutItem size="12" flexibility="auto" class="slds-no-padding slds-box slds-m-top_small">
+                <lightning:accordion aura:id="accordion_message" allowMultipleSectionsOpen="true" activeSectionName=""
+                    onsectiontoggle="{! c.handleSectionToggle }">
+                    <lightning:accordionSection name="Message" label="Message">
+                        <aura:if isTrue="{!v.scheduleObj.Action == 'Email'}">
+                            <c:SCH_EmailSchedule scheduleObj="{!v.scheduleObj}"
+                                sobjectApiName="{!(not(empty(v.relatedRecordId))?'conference360__Email_Template__c':'EmailTemplate')}"
+                                resultSecondaryField="{!(not(empty(v.relatedRecordId))?'conference360__Event__r.Name':'FolderName')}"
+                                emailTemplateId="{!v.scheduleObj.Email_Template_Id}"
+                                selectedActiveSectionName="{!v.selectedActiveSectionName}"
+                                currentStep="{!v.currentStep}" aura:id="email_message"
+                                relatedRecordId="{!v.relatedRecordId}">
+                            </c:SCH_EmailSchedule>
+                        </aura:if>
+                        <aura:if
+                            isTrue="{!and(v.scheduleObj.Action == 'SMS', v.selectedActiveSectionName == 'Message')}">
+                            <c:SCH_SMSSchedule scheduleObj="{!v.scheduleObj}"
+                                selectedActiveSectionName="{!v.selectedActiveSectionName}"
+                                currentStep="{!v.currentStep}" aura:id="message" relatedRecordId="{!v.relatedRecordId}">
+                            </c:SCH_SMSSchedule>
+                        </aura:if>
+                    </lightning:accordionSection>
+                </lightning:accordion>
+            </lightning:layoutItem>
+        </aura:if>
+        <aura:if isTrue="{!v.currentStep >= 4}">
+            <lightning:layoutItem size="12" flexibility="auto" class="slds-no-padding slds-box slds-m-top_small">
+                <lightning:accordion aura:id="accordion_preview" allowMultipleSectionsOpen="true" activeSectionName=""
+                    onsectiontoggle="{! c.handleSectionToggle }">
+                    <lightning:accordionSection name="Preview" label="Send Test">
+                        <aura:if isTrue="{!and(v.scheduleObj.AssociateWithReferencedRecordOptions, v.scheduleObj.AssociateWithReferencedRecordOptions.length>0)}">
+                            <c:SCH_SendTest scheduleObj="{!v.scheduleObj}"
+                                selectedActiveSectionName="{!v.selectedActiveSectionName}" currentStep="{!v.currentStep}"
+                                aura:id="sendTest"
+                                lkp_resultPrimaryField="{!(v.selectScheduleAttendees=='conference360__Attendee__c'?'conference360__Attendee_Full_Name__c':(v.selectScheduleAttendees=='conference360__Session_Attendee__c'?'conference360__Session_Attendee_Full_Name__c':''))}"
+                                helpLinks="{!v.helpLinks}"
+                                associateReferencedRecordOptions="{!v.scheduleObj.AssociateWithReferencedRecordOptions}">
+                            </c:SCH_SendTest>
+                            <aura:set attribute="else">
+                                <c:SCH_SendTest scheduleObj="{!v.scheduleObj}"
+                                    selectedActiveSectionName="{!v.selectedActiveSectionName}" currentStep="{!v.currentStep}"
+                                    aura:id="sendTest"
+                                    lkp_resultPrimaryField="{!(v.selectScheduleAttendees=='conference360__Attendee__c'?'conference360__Attendee_Full_Name__c':(v.selectScheduleAttendees=='conference360__Session_Attendee__c'?'conference360__Session_Attendee_Full_Name__c':''))}"
+                                    helpLinks="{!v.helpLinks}">
+                                </c:SCH_SendTest>
+                            </aura:set>
+                        </aura:if>
+                    </lightning:accordionSection>
+                </lightning:accordion>
+            </lightning:layoutItem>
+        </aura:if>
+    </lightning:layout>
+
+
+    <aura:if isTrue="{!v.isShowViewRecipientsModal}">
+        <c:SCH_TotalRecipients selectScheduleAttendees="{!v.selectScheduleAttendees}"
+            selectedRelatedObjectFieldAPIName="{!v.scheduleObj.Related_Object_FieldAPIName}"
+            selectScheduleType="{!v.scheduleObj.Action}" isShowViewRecipientsModal="{!v.isShowViewRecipientsModal}"
+            fieldNameToShow="{!(v.scheduleObj.Action=='Email'?v.scheduleObj.Email_To_Address:v.scheduleObj.SMS_To_Number)}"
+            filter="{!v.filter}"
+            nameFieldToReplace="{!(v.selectScheduleAttendees=='conference360__Attendee__c'?'conference360__Attendee_Full_Name__c':(v.selectScheduleAttendees=='conference360__Session_Attendee__c'?'conference360__Session_Attendee_Full_Name__c':''))}">
+        </c:SCH_TotalRecipients>
+    </aura:if>
+
+    <aura:if isTrue="{!v.allowFieldSelection}">
+        <c:SCH_sObjectFieldSelector sObjectName="{!(v.scheduleObj.Related_Object?v.scheduleObj.Related_Object:v.scheduleObj.Base_Object)}"
+                                    aura:id="sObjectFieldSelector"
+                                    action="{!v.scheduleObj.Action=='Email'?'EMAIL':'PHONE'}"
+                                    onchange="{!c.handleChangesObjectToEmailSelector}">
+        </c:SCH_sObjectFieldSelector>
+    </aura:if>
+</aura:component>

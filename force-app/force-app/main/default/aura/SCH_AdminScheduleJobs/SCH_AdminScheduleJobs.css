@@ -1,0 +1,49 @@
+.THIS .filterSection {
+    z-index: 9999;
+    position: relative;
+    right: 25rem;
+    top: -10px;
+    width: 32%;
+    min-width: 25rem;
+}
+
+.THIS .datatable-panel {
+    max-height: calc(100vh - 250px);
+}
+
+.THIS .datatable-panel .slds-scrollable_y {
+    max-height: calc(100vh - 375px);
+}
+
+.THIS .execution-details .slds-modal__content {
+    height: calc(100vh - 425px);
+}
+
+.THIS .execution-details .slds-modal .datatable-panel .slds-scrollable_y {
+    max-height: calc(100vh - 500px);
+}
+
+.THIS .create-schedule {
+    top: 2px;
+}
+
+.THIS .slds-schedule-date-time button {
+    line-height: inherit;
+    text-align: left;
+    color: unset !important;
+    box-shadow: unset;
+    cursor: default;
+    border: 0;
+}
+
+.THIS .slds-schedule-date-time.no-info button {
+    padding-right: 22px;
+}
+
+.THIS .custom-time_zone {
+    padding: 0px !important;
+}
+
+.THIS .custom-font_bold {
+    font-weight: bold;
+}

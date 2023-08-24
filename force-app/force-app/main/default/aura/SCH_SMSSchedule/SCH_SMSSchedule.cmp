@@ -1,0 +1,33 @@
+<aura:component extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="String" name="relatedRecordId" default="" />
+    <aura:attribute type="Object" name="scheduleObj" default="{}" />
+    <aura:attribute type="String" name="selectedActiveSectionName" default="" />
+    <aura:attribute type="String" name="smsCmpName" default="simplesms:Messenger3" />
+    <aura:attribute type="Boolean" name="messengerLoaded" default="false" />
+    <aura:attribute type="Integer" name="currentStep" default="0" />
+
+    <!--method-->
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}" />
+    <aura:method name="validateScheduleForm" action="{!c.handleValidatedForm}" description="used to validate form" />
+    <aura:method name="validateSectionToggleForm" action="{!c.handleValidatedSectionToggleForm}" description="used to validate form" />
+
+    <div>
+        <lightning:layout multipleRows="true" class="slds-m-top_small">
+            <lightning:layoutItem size="12" flexibility="auto">
+                <aura:if isTrue="{!!v.messengerLoaded}">
+                    <lightning:spinner variant="brand" alternativeText="loading..." />
+                </aura:if>
+                <div aura:id="smspenal">
+                </div>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" flexibility="auto" padding="around-small" class="slds-text-align_right">
+                <button class="slds-button slds-button_neutral" onclick="{!c.handlePrevious}">Previous</button>
+                <button class="slds-button slds-button_brand" onclick="{!c.handleNext}"
+                    disabled="{!!v.messengerLoaded}">Next</button>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+</aura:component>

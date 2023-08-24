@@ -1,0 +1,21 @@
+<aura:component controller="SCH_CtrlLtngAdmin">
+    <!-- attributes -->
+    <aura:attribute type="Id" name="userId" />
+    <aura:attribute type="object" name="avtar" />
+
+    <!-- performance -->
+    <aura:attribute type="Map" name="usersMap" default="{}" />
+
+    <!-- dependencies -->
+    <aura:dependency resource="markup://lightning:avatar" />
+
+    <!-- event handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <!-- component markup -->
+    <div aura:id="avatar"></div>
+    <aura:if isTrue="{!!empty(v.avtar)}">
+        <lightning:avatar aura:id="avt" src="{!v.avtar.SmallPhotoUrl}" size="medium" variant="circle"
+            class="slds-avatar slds-avatar_circle slds-chat-avatar" fallbackIconName="standard:avatar_loading" />
+    </aura:if>
+</aura:component>

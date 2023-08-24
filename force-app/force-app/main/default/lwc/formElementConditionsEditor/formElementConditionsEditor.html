@@ -1,0 +1,26 @@
+<template>
+    <div class="slds-m-bottom_x-small">
+        <lightning-radio-group name="showConditions"
+            label="When should this question show?"
+            options={conditionOptions}
+            value={showConditionsValue}
+            type="radio"
+            onchange={setShowConditions}
+        ></lightning-radio-group>
+    </div>
+    <template if:true={showConditions}>
+        <template for:each={mutableConditions} for:item="condition">
+            <c-form-element-condition-editor
+                key={condition.id}
+                condition={condition}
+                available-element-options={availableElementOptions}
+                onconditionchange={updateCondition}
+                onconditiondelete={deleteCondition}
+            ></c-form-element-condition-editor>
+        </template>
+        <div class="slds-m-top_medium">
+            <lightning-button label="Reset" onclick={resetConditions} class="slds-m-right_small"></lightning-button>
+            <lightning-button label="Add Condition" variant="brand" onclick={addNewCondition}></lightning-button>
+        </div>
+    </template>
+</template>

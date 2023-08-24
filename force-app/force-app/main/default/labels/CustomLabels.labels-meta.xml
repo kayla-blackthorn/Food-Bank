@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Btn_Assign_PermissionSet</fullName>
+        <categories>Admin</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Assign Permission Set</shortDescription>
+        <value>Assign Permission Set</value>
+    </labels>
+    <labels>
+        <fullName>Btn_Authorize_the_App</fullName>
+        <categories>Admin</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Authorize the App</shortDescription>
+        <value>Authorize the App</value>
+    </labels>
+    <labels>
+        <fullName>Error_Not_SystemAdmin</fullName>
+        <categories>Admin</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Message Error Not SysAdin</shortDescription>
+        <value>You need to have the admin permission sets to authorize the applications .</value>
+    </labels>
+    <labels>
+        <fullName>Form_Builder_Max_Limit</fullName>
+        <categories>Forms</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Max limit of records for form builder</shortDescription>
+        <value>Can handle 10000 records at most per call.</value>
+    </labels>
+    <labels>
+        <fullName>Label_Admin_Title</fullName>
+        <categories>Admin</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Blackthorn Storefront Admin Title</shortDescription>
+        <value>Blackthorn Admin</value>
+    </labels>
+    <labels>
+        <fullName>Label_Configuration_Tabset</fullName>
+        <categories>Admin</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Configuration Tabset</shortDescription>
+        <value>Configuration</value>
+    </labels>
+    <labels>
+        <fullName>Message_Authorize_Info</fullName>
+        <categories>Admin</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Message Authorize Info</shortDescription>
+        <value>This allows the app to show the information on the Storefront overview, checkout, and post-registration.</value>
+    </labels>
+    <labels>
+        <fullName>Message_Org_Authorized</fullName>
+        <categories>Admin</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Org Authorized</shortDescription>
+        <value>App was authorized on {0}. You can click the &quot;Authorize the App&quot; button if you need to authorize with a different user or if you are getting an error with apps.</value>
+    </labels>
+    <labels>
+        <fullName>Only_One_Default_Branding_Setting</fullName>
+        <categories>Base</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Only One Default Branding Setting</shortDescription>
+        <value>You can have only 1 Default Branding Settings. Please remove the current Default before attempting this change.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_Acc_Invalid_Credentials</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH Account Invalid Credentials</shortDescription>
+        <value>Invalid Credentials.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_Account_Created</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH Account created</shortDescription>
+        <value>Congratulations! Your account was created.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_From_Address</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH_From_Address</shortDescription>
+        <value>The email addresses are coming from verified Organization-Wide Email Addresses</value>
+    </labels>
+    <labels>
+        <fullName>SCH_From_Number</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH_From_Number</shortDescription>
+        <value>This is coming from BT Messaging APP. The number is used for sending messages to the recipients.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_KA_Common_Help_Text</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH_KA_Common_Help_Text</shortDescription>
+        <value>For more information about this feature, please click the icon</value>
+    </labels>
+    <labels>
+        <fullName>SCH_No_From_Address</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH_No_From_Address</shortDescription>
+        <value>Please configure Org Wide Email address.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_Resend_Execution_Status_Success</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH_SS_Resend_Execution_Status_Success</shortDescription>
+        <value>Resend Execution Status Email Completed!</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_Retry_Failed_Records_Success</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH_SS_Retry_Failed_Records_Success</shortDescription>
+        <value>Process Completed!</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_action_archive</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler action row action archive label.</shortDescription>
+        <value>Archive</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_action_configuration_settings_section_title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH_SS_action_configuration_settings_section_title</shortDescription>
+        <value>Configuration Settings</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_action_create_schedule_section_title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH SS create schedule section title</shortDescription>
+        <value>Messages</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_action_create_scheduler_label</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH SS action create scheduler label</shortDescription>
+        <value>New Message</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_action_edit</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler action row action edit label.</shortDescription>
+        <value>Edit</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_action_no_action</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH_SS_action_no_action</shortDescription>
+        <value>No Action</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_action_unschedule</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler action row action unschedule label.</shortDescription>
+        <value>Unschedule</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_action_view_detail</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler action row action View Detail label.</shortDescription>
+        <value>View Detail</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_field_selection_error_datetime</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler config datetime field error</shortDescription>
+        <value>Schedule : You must select a valid date time.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_field_selection_error_email_template</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler config email template field error</shortDescription>
+        <value>Email Template : You must select a value.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_field_selection_error_from_email</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler config from email field error</shortDescription>
+        <value>From Email Address : You must select a value.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_field_selection_error_from_sms</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler config from sms field error</shortDescription>
+        <value>Send SMS From : You must select a value.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_field_selection_error_name</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler config name field error</shortDescription>
+        <value>Schedule Name : You must enter a value.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_field_selection_error_past_datetime</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler config datetime past value error</shortDescription>
+        <value>Schedule : Date Time should be a future Date/time.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_field_selection_error_related_object</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler config related object field error</shortDescription>
+        <value>Related Object : You must select Related Object.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_field_selection_error_sms</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler config sms field error</shortDescription>
+        <value>Message : You must enter a value or select an attachment.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_field_selection_error_to_email</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler config to email field error</shortDescription>
+        <value>To Email : You must select a value.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_field_selection_error_to_sms</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Smart Scheduler config to sms field error</shortDescription>
+        <value>Send SMS To : You must select a value.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_SS_no_scheduled_actions</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH SS no scheduled actions</shortDescription>
+        <value>No scheduled SMS or Emails</value>
+    </labels>
+    <labels>
+        <fullName>SCH_Schedule_Name</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH_Schedule_Name</shortDescription>
+        <value>This name is to identify your schedule Job. We use this name in the intimation Emails while job is in process</value>
+    </labels>
+    <labels>
+        <fullName>SCH_TO_Number</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SCH_TO_Number</shortDescription>
+        <value>This is a phone type field coming here from the related object</value>
+    </labels>
+    <labels>
+        <fullName>SCH_apex_unknow_error</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Apex calling unknow errors</shortDescription>
+        <value>Unknown Error check logs</value>
+    </labels>
+    <labels>
+        <fullName>SCH_filter_builder_condition_all_selection</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Builder operator All description.</shortDescription>
+        <value>All of the conditions are met (AND)</value>
+    </labels>
+    <labels>
+        <fullName>SCH_filter_builder_condition_custom_selection</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Builder operator custom logic description.</shortDescription>
+        <value>Customize the logic</value>
+    </labels>
+    <labels>
+        <fullName>SCH_filter_builder_condition_custom_selection_info</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Builder operator custom logic guide.</shortDescription>
+        <value>Customize the logic for the filter conditions that you specified. For example, if you enter 1 AND (2 OR 3), this criteria evaluates to true when the first condition is true and either the second or third condition is true.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_filter_builder_condition_or_selection</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Builder operator or description.</shortDescription>
+        <value>Any of the conditions are met (OR)</value>
+    </labels>
+    <labels>
+        <fullName>SCH_filter_builder_error_condition_logic_invalid</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Builder Invalid condition.</shortDescription>
+        <value>Invalid condition logic: Check the spelling in your filter logic.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_filter_builder_error_condition_logic_missed</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Builder missed to use defined condition.</shortDescription>
+        <value>Invalid condition logic: Some filter conditions are defined but not referenced in your filter logic.</value>
+    </labels>
+    <labels>
+        <fullName>SCH_filter_builder_error_condition_logic_not_defined</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filter Builder missed to define condition.</shortDescription>
+        <value>Invalid condition logic: The filter logic references an undefined filter:</value>
+    </labels>
+    <labels>
+        <fullName>fflib_security_error_field_not_insertable</fullName>
+        <categories>security,error</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>fflib_security_error_field_not_insertable</shortDescription>
+        <value>You do not have permission to insert field {1} on {0}</value>
+    </labels>
+    <labels>
+        <fullName>fflib_security_error_field_not_readable</fullName>
+        <categories>security,error</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>fflib_security_error_field_not_readable</shortDescription>
+        <value>You do not have permission to read the field {1} on {0}</value>
+    </labels>
+    <labels>
+        <fullName>fflib_security_error_field_not_updateable</fullName>
+        <categories>security,error</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>fflib_security_error_field_not_updateable</shortDescription>
+        <value>You do not have permission to update the field {1} on {0}</value>
+    </labels>
+    <labels>
+        <fullName>fflib_security_error_object_not_deletable</fullName>
+        <categories>security,error</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>fflib_security_error_object_not_deletable</shortDescription>
+        <value>You do not have permission to delete {0}</value>
+    </labels>
+    <labels>
+        <fullName>fflib_security_error_object_not_insertable</fullName>
+        <categories>security,error</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>fflib_security_error_object_not_insertable</shortDescription>
+        <value>You do not have permission to insert {0}</value>
+    </labels>
+    <labels>
+        <fullName>fflib_security_error_object_not_readable</fullName>
+        <categories>security,error</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>fflib_security_error_object_not_readable</shortDescription>
+        <value>You do not have permission to read {0}</value>
+    </labels>
+    <labels>
+        <fullName>fflib_security_error_object_not_updateable</fullName>
+        <categories>security,error</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>fflib_security_error_object_not_updateable</shortDescription>
+        <value>You do not have permission to update {0}</value>
+    </labels>
+    <labels>
+        <fullName>Form_Builder_Max_Limit</fullName>
+        <categories>Forms</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Max limit of records for form builder</shortDescription>
+        <value>Can handle 10000 records at most per call.</value>
+    </labels>
+</CustomLabels>

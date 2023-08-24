@@ -1,0 +1,13 @@
+.THIS {
+    display: inline-block;
+}
+
+.THIS.action-dropdown {
+    display: inline-block;
+    position: absolute;
+}
+
+.THIS>.slds-form-element {
+    top: 24px;
+    left: -135px;
+}

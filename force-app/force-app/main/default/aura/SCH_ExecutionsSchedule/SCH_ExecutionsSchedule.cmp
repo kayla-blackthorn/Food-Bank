@@ -1,0 +1,92 @@
+<aura:component controller="SCH_SmartSchedulerController" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="Object" name="scheduleData" />
+    <aura:attribute type="List" name="data" />
+    <aura:attribute type="List" name="columns" />
+    <aura:attribute type="Integer" name="current_page" default="1" />
+    <aura:attribute type="Integer" name="page_size" default="15" />
+    <aura:attribute type="String" name="nameFieldToReplace" />
+    <aura:attribute type="String" name="selectedExecutionSFId" />
+    <aura:attribute type="String" name="selectedExecutionSFName" />
+    <aura:attribute type="Integer" name="totalRecords" default="0" />
+    <aura:attribute type="Boolean" name="showAllExecution" default="false" />
+    <aura:attribute type="Boolean" name="enableInfiniteLoading" default="true" />
+    <aura:attribute type="Boolean" name="isDisplayFailedOnly" default="false" />
+    <aura:attribute type="Boolean" name="isShowRetryFailedOnly" default="false" />
+    <aura:attribute type="Boolean" name="defaultShowAll" default="true" />
+
+    <!--handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <!--markup-->
+    <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+        class="slds-modal slds-fade-in-open slds-modal_medium">
+        <div class="slds-modal__container">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                onclick="{!c.handleCloseExecutionModal}">
+                <lightning:icon iconName="utility:close" size="small" variant="inverse" />
+                <span class="slds-assistive-text">Cancel and close</span>
+            </button>
+            <div class="slds-modal__header">
+                <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                    <span class="{!'slds-icon_container slds-icon-standard-'+v.scheduleData.schedule_Type}">
+                        <lightning:icon iconName="{!'standard:'+v.scheduleData.schedule_Type}" size="xx_small" />
+                    </span>
+                    Schedule ({!v.scheduleData.schedule_Name}) {!v.selectedExecutionSFName?' - Execution ('+v.selectedExecutionSFName+') ':' '} Details
+                </h1>
+            </div>
+            <div class="slds-modal__content slds-p-around_xx-small custom-modal_body" id="modal-content-id-1">
+                <aura:if isTrue="{!v.actionCnt > 0}">
+                    <lightning:spinner variant="brand" size="medium" class="spinnerClass" />
+                </aura:if>
+                <p class="slds-p-top_xxx-small">
+                    <aura:if isTrue="{!or(v.data==undefined, v.data.length==0)}">
+                        <div style="background: #f3f3f3;">
+                            <div class="slds-text-align_center slds-p-around_medium">
+                                <p>{!and(v.selectedExecutionSFName, v.isDisplayFailedOnly==false)?'No error logs to display':'No logs to display'}</p>
+                            </div>
+                        </div>
+                        <aura:set attribute="else">
+                            <p class="slds-text-title slds-text-body_small slds-p-vertical_x-small slds-p-left_small">
+                                {!v.data.length} of {!v.totalRecords+' '+(v.data.length>1?' Items':' Item')}</p>
+                            <div class="datatable-panel">
+                                <c:customDatatable columns="{! v.columns }" data="{!v.data}" keyField="salesforce_id"
+                                    hideCheckboxColumn="true" showRowNumberColumn="true"
+                                    enableInfiniteLoading="{!v.enableInfiniteLoading}"
+                                    onrowaction="{!c.handleExecutionRowAction}"
+                                    onloadmore="{! c.handleLoadMoreData }" />
+                            </div>
+                        </aura:set>
+                    </aura:if>
+                </p>
+            </div>
+            <div class="slds-modal__footer">
+                <aura:if isTrue="{!v.selectedExecutionSFId}">
+                    <div dir="rtl" class="slds-float_left">
+                        <lightning:input type="toggle" label="Show All" name="include_archived" variant="label-stacked"
+                            class="toogle-archived_menu" checked="{!v.isDisplayFailedOnly}" messageToggleInactive=""
+                            messageToggleActive="" onchange="{!c.handleChangeDisplayFailedOnly}" />
+                    </div>
+                    <aura:if isTrue="{!and(v.data, v.data.length>0)}">
+                        <lightning:buttonIcon iconName="utility:email" alternativeText="Email Summary" title="Email Summary"
+                            class="email-button_align"
+                            variant="border-filled"
+                            onclick="{!c.handleResendExecutionStatusEmail}" />
+                    </aura:if>
+                    <aura:if isTrue="{!v.isShowRetryFailedOnly}">
+                        <lightning:button label="Retry Failed Only" title="Retry Sending Email/SMS To Failed Only"
+                            variant="brand"
+                            onclick="{!c.handleRetryFailedOnly}" />
+                    </aura:if>
+                    <lightning:button label="Back" onclick="{!c.handleBack}"></lightning:button>
+                    <aura:set attribute="else">
+                        <lightning:button label="Close" onclick="{!c.handleCloseExecutionModal}"></lightning:button>
+                    </aura:set>
+                </aura:if>
+            </div>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+</aura:component>

@@ -1,0 +1,25 @@
+.THIS .scrollerSize {
+    height: 95vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.THIS .icon-success {
+    fill: green !important;
+}
+
+.THIS .icon-warning {
+    fill: orange !important;
+}
+
+.THIS .custom-modal_body {
+    position: relative !important;
+}
+
+.THIS .toogle-archived_menu>.slds-form-element__control>label>.slds-form-element__label {
+    padding-left: 5px !important;
+}
+
+.THIS .email-button_align {
+    top: -1.5px;
+}

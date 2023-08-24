@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Custom_CSS_URL__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>A link to a custom CSS file for your Store.</inlineHelpText>
+    <label>Custom CSS URL</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Url</type>
+</CustomField>

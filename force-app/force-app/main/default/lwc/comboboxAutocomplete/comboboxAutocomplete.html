@@ -1,0 +1,109 @@
+<template>
+    <div class={computedFormElementClass}>
+        <label class="slds-form-element__label" for="combobox">
+            <template if:true={required}><abbr class="slds-required" title="required">* </abbr></template>{label}
+        </label>
+        <template if:true={fieldLevelHelp}>
+            <lightning-helptext content={fieldLevelHelp}></lightning-helptext>
+        </template>
+        <div class="slds-form-element__control">
+          <div class="slds-combobox_container">
+            <div class={computedComboboxClass} role="combobox"
+                aria-invalid={invalid}
+                aria-haspopup="listbox"
+                aria-expanded={expanded}
+                aria-describedby="help-text"
+            >
+              <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                <input
+                    type="text"
+                    class="slds-input slds-combobox__input"
+                    id="combobox"
+                    aria-autocomplete="list"
+                    aria-controls="dropdown-element"
+                    autocomplete="off"
+                    readonly={readOnly}
+                    disabled={disabled}
+                    role="combobox"
+                    value={inputText}
+                    placeholder={placeholder}
+                    oninput={handleInputTextChange}
+                    onfocus={handleInputFocus}
+                    onblur={handleInputBlur}
+                    onclick={handleInputClick}
+                    onkeydown={handleInputKeyDown}
+                />
+                <template if:false={value}>
+                    <span class="slds-icon_container slds-input__icon slds-input__icon_right">
+                        <lightning-icon icon-name="utility:search" size="xx-small"></lightning-icon>
+                    </span>
+                </template>
+                <template if:true={value}>
+                    <span class="clear-button-container">
+                        <lightning-button-icon onclick={handleClearText} icon-name="utility:clear"  variant="bare" alternative-text="Clear text" title="Clear text"></lightning-button-icon>
+                    </span>
+                </template>
+              </div>
+              <div id="dropdown-element" tabindex="-1" class={computedDropdownClass} role="listbox" style={dropdownPlacementStyle}>
+                <template if:true={opened}>
+                    <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                        <template if:true={hasOptions}>
+                            <template for:each={filteredOptions} for:item="option">
+                                <li key={option.value} role="presentation" class="slds-listbox__item" >
+                                    <template if:true={option.focused}>
+                                        <div class="slds-media slds-listbox__option slds-media_center slds-listbox__option_plain slds-media_small slds-has-focus" role="option"
+                                            data-value={option.value}
+                                            onclick={handleSelectOption}
+                                        >
+                                            <span class="slds-media__figure slds-listbox__option-icon">
+                                                <template if:true={option.selected}>
+                                                    <lightning-icon size="xx-small" icon-name="utility:check"></lightning-icon>
+                                                </template>
+                                            </span>
+                                            <span class="slds-media__body">
+                                                <span class="slds-truncate" title={option.label}>{option.label}</span>
+                                            </span>
+                                        </div>
+                                    </template>
+                                    <template if:false={option.focused}>
+                                        <div class="slds-media slds-listbox__option slds-media_center slds-listbox__option_plain slds-media_small" role="option"
+                                            data-value={option.value}
+                                            onclick={handleSelectOption}
+                                        >
+                                            <span class="slds-media__figure slds-listbox__option-icon">
+                                                <template if:true={option.selected}>
+                                                    <lightning-icon size="xx-small" icon-name="utility:check"></lightning-icon>
+                                                </template>
+                                            </span>
+                                            <span class="slds-media__body">
+                                                <span class="slds-truncate" title={option.label}>{option.label}</span>
+                                            </span>
+                                        </div>
+                                    </template>
+                                </li>
+                            </template>
+                        </template>
+                        <template if:false={hasOptions}>
+                            <li role="presentation" class="slds-listbox__item">
+                                <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option"
+                                    data-value=""
+                                    onclick={handleSelectOption}
+                                >
+                                    <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                    <span class="slds-media__body">
+                                        <span class="slds-truncate" title="No options found.">No options found.</span>
+                                    </span>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+        <template if:true={hasError}>
+            <div class="slds-form-element__help" id="help-text">{errorMessage}</div>
+        </template>
+    </div>
+</template>

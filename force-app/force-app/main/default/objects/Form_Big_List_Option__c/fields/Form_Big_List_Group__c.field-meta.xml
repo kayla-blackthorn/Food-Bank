@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Form_Big_List_Group__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The Form Big List Group related to this Option.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The Form Big List Group related to this Option.</inlineHelpText>
+    <label>Form Big List Group</label>
+    <referenceTo>Form_Big_List_Group__c</referenceTo>
+    <relationshipLabel>Form Big List Options</relationshipLabel>
+    <relationshipName>Form_Big_List_Options</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

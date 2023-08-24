@@ -1,0 +1,146 @@
+<template>
+    <div class={lookupClass}>
+        <label if:true={showLabel} class="slds-form-element__label">
+            <abbr if:true={required} class="slds-required">*</abbr>{label}&nbsp;<lightning-helptext content={helptext}
+                if:true={showHelptext}></lightning-helptext>
+        </label>
+        <div class="slds-form-element__control">
+            <div class={comboboxClass}>
+                <div class={lookupComboboxClass} data-key="lookupcombobox" role="combobox">
+                    <div if:true={isRecordSelected} class={recordSelectedClass}>
+                        <!-- icon  -->
+                        <span class="slds-icon_container slds-combobox__input-entity-icon" title={objLabel}
+                            if:true={showIcon}>
+                            <lightning-icon icon-name={iconName} size="x-small" class="slds-m-right_x-small">
+                            </lightning-icon>
+                        </span>
+                        <!-- value -->
+                        <button type="button" class="slds-input_faux slds-combobox__input slds-combobox__input-value">
+                            <span class="slds-truncate" title={record.name}>{record.name}</span>
+                        </button>
+                        <!-- remove -->
+                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"
+                            title="Remove selected option" onmousedown={handleSelectionRemove}>
+                            <lightning-icon icon-name="utility:close" size="x-small" alternative-text="close">
+                            </lightning-icon>
+                        </button>
+                    </div>
+
+                    <template if:false={isRecordSelected}>
+                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                            role="none">
+                            <span class={hasErrorClass}>
+                                <input type="text" class="slds-input" data-key="lookup-search" role="textbox"
+                                    placeholder={cPlaceholder} autocomplete="off" onclick={handleClick}
+                                    onkeydown={handleKeyDown} onkeyup={handleKeyUp} onfocus={handleFocus}
+                                    onfocusout={handleFocusLost} onblur={handleBlur} if:true={allowSearch} />
+                                <span class="slds-input" if:false={allowSearch}></span>
+                            </span>
+
+                            <span
+                                class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right"
+                                title="Description of icon when needed">
+                                <div if:true={loadingData} class="slds-spinner_container">
+                                    <div role="status" class="slds-spinner slds-spinner_brand slds-spinner_x-small">
+                                        <span class="slds-assistive-text">Loading</span>
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                                <lightning-icon if:true={visibleSearchIcon} icon-name="utility:search" size="xx-small">
+                                </lightning-icon>
+                            </span>
+
+                        </div>
+                    </template>
+                    <div id="listbox-id-object"
+                        class="slds-dropdown slds-dropdown_length-with-icon-5 slds-dropdown_fluid" role="listbox"
+                        onclick={handlePanel}>
+                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                            <li if:true={cRecordNotFound} role="presentation"
+                                class="slds-listbox__item no-record-found">
+                                <div id="optionno"
+                                    class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                    role="option">
+                                    <template if:true={loadingData}>
+                                        <span class="slds-media__figure slds-listbox__option-icon">
+                                            <span class="slds-icon_container">
+                                                <lightning-icon icon-name="utility:search" size="small">
+                                                </lightning-icon>
+                                            </span>
+                                        </span>
+                                        <span class="slds-media__body">
+                                            <span class="slds-truncate slds-p-top_xx-small">Searching...</span>
+                                        </span>
+                                    </template>
+                                    <template if:false={loadingData}>
+                                        <span class="slds-media__figure slds-listbox__option-icon">
+                                            <span class="slds-icon_container">
+                                                <lightning-icon icon-name="utility:error" size="small"></lightning-icon>
+                                            </span>
+                                        </span>
+                                        <span class="slds-media__body">
+                                            <span class="slds-truncate slds-p-top_xx-small" title={cRecordNotFoundInfo}>
+                                                {cRecordNotFoundInfo}
+                                            </span>
+                                        </span>
+                                    </template>
+                                </div>
+                            </li>
+                            <template if:false={cRecordNotFound} for:each={records} for:item="record" for:index="index">
+                                <li key={record.id} data-index={index} onmousedown={handleSelection}
+                                    class={record.className}>
+                                    <div id={record.id}
+                                        class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                        role="option">
+                                        <span
+                                            class="slds-media__figure slds-listbox__option-icon slds-align_absolute-center"
+                                            if:true={showIcon}>
+                                            <span class="slds-icon_container">
+                                                <lightning-icon icon-name={iconName} size="small"></lightning-icon>
+                                            </span>
+                                        </span>
+                                        <span class="slds-media__body" if:false={displaySubDetails}>
+                                            <span class="slds-truncate slds-p-top_xx-small" title={record.name}>
+                                                {record.name}
+                                            </span>
+                                        </span>
+
+                                        <span class="slds-media__body" if:true={displaySubDetails}>
+                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                                {record.name}
+                                            </span>
+                                            <span class="slds-listbox__option-meta slds-listbox__option-meta_entity">
+                                                {record.subDetails}
+                                            </span>
+                                        </span>
+                                    </div>
+                                </li>
+                            </template>
+                            <li if:true={data.isCreateable} data-index={data.createNewKey} onmousedown={handleSelection}
+                                class="slds-listbox__item">
+                                <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                    role="option">
+                                    <span
+                                        class="slds-media__figure slds-listbox__option-icon slds-align_absolute-center"
+                                        if:true={showIcon}>
+                                        <span class="slds-icon_container">
+                                            <lightning-icon icon-name={data.createNewIcon} size="x-small">
+                                            </lightning-icon>
+                                        </span>
+                                    </span>
+                                    <span class="slds-media__body">
+                                        <span class="slds-truncate slds-p-top_xx-small" title={data.createNewLabel}>
+                                            {data.createNewLabel}
+                                        </span>
+                                    </span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div role="alert" class="slds-form-element__help slds-hide">Complete this field.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,27 @@
+<template>
+    <c-sortable-list
+        max-height={maxHeight}
+        onsortablelistregister={handleSortableListRegister}
+        ondatachange={handleDataChange}
+        onhovering={handleHoveringItem}
+        onexpandchange={handleExpandChange}
+        oneditclicked={handleEditElement}
+        ondeleteclicked={handleDeleteElement}
+    >
+        <template for:each={elements} for:item="element">
+            <c-sortable-item
+                class="slds-m-bottom_x-small"
+                key={element.element.id}
+                value={element.element}
+            >
+                <c-form-element-item
+                    level={element.level}
+                    value={element.element}
+                    message={element.message}
+                    expandable={element.expandable}
+                    expanded={element.expanded}
+                ></c-form-element-item>
+            </c-sortable-item>
+        </template>
+    </c-sortable-list>
+</template>

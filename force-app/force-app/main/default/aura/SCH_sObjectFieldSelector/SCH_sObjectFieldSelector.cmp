@@ -1,0 +1,124 @@
+<aura:component controller="SCH_SObjectFilterBuilderCtlr" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="String" name="recordId" />
+    <aura:attribute type="String" name="sObjectName" />
+    <aura:attribute type="String" name="_sObjectName" />
+    <aura:attribute type="String" name="action" />
+    <aura:attribute type="String" name="customConditionalLogic" default="" />
+    <aura:attribute type="String" name="selectedCondition"
+        default="{!$Label.c.SCH_filter_builder_condition_all_selection}" />
+    <aura:attribute type="String" name="errorMessage" />
+    <aura:attribute type="Boolean" name="hasError" default="false" />
+
+    <aura:attribute type="Map" name="data" default="{}" />
+    <aura:attribute type="Map" name="conditionData" default="{}" />
+    <aura:attribute type="Map" name="fieldData" default="{}" />
+    <aura:attribute type="Map" name="fieldTypeData" default="{}" />
+    <aura:attribute type="Map" name="filterData" default="{}" />
+
+    <aura:attribute type="List" name="filters" default="[]" />
+    <aura:attribute type="List" name="_filters" default="[]" />
+
+    <!-- onchange type of component action, so that fire that on changing filter, operator and value -->
+    <aura:attribute type="Object" name="onchange" />
+
+    <!-- handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}" />
+    <aura:handler name="change" value="{!v.sObjectName}" action="{!c.handleChangeSObjectName}" />
+
+    <aura:method name="getFilters" action="{!c.handleGetFilters}" />
+    <div>
+        <aura:if isTrue="{!v.hasError}">
+            <div class="error">
+                {!v.errorMessage}
+            </div>
+        </aura:if>            
+        <aura:if isTrue="{!v.fieldData.allowSelection}">
+            <section tabindex="-1" aria-labelledby="modal-field-select" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <lightning:buttonIcon iconName="utility:close" class="slds-modal__close" variant="border-inverse"
+                        alternativeText="close" title="Close" onclick="{!c.handleFieldSelectionCancel}" />
+
+                    <div class="slds-modal__header">
+                        <h1 id="modal-field-select" class="slds-modal__title slds-hyphenate">Select a Field</h1>
+                    </div>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-field-select-content">
+                        <div class="slds-text-title slds-p-bottom_small slds-p-left_xx-small">
+                            Select a field, then click Insert. Labels followed by a ">" indicate that there are more
+                            fields available
+                        </div>
+                        <div class="slds-box slds-box_small">
+                            <div class="slds-label slds-p-top_x-small slds-inline-block">{!v.data.sObjectApiName}
+                                <lightning:icon iconName="utility:right" size="x-small"
+                                    class="slds-p-top_small slds-vertical_small" />
+                            </div>
+                            <aura:iteration items="{!v.fieldData.selectedFields}" var="field" indexVar="findex">
+                                <aura:if isTrue="{!field.selected}">
+                                    <div class="slds-p-top_x-small slds-inline-block">
+                                        <a data-index="{!findex}"
+                                            onclick="{!c.handleFieldEdit}">{!field.field.label}</a>
+                                        <!-- {!field.field.label} -->
+                                        <aura:if
+                                            isTrue="{!and(v.fieldData.level != findex, v.fieldData.lastFieldIndex != findex)}">
+                                            <lightning:icon iconName="utility:right" size="x-small"
+                                                class="slds-p-top_small slds-p-horizontal_x-small" />
+                                        </aura:if>
+                                    </div>
+                                    <aura:set attribute="else">
+                                        <div class="slds-p-vertical_xx-small slds-inline-block">
+                                            <aura:if isTrue="{!field.loadingFields}">
+                                                <aura:set attribute="else">
+                                                    <c:SCH_multiselect variant="label-hidden"
+                                                        options="{! findex == 0 ? v.fieldData.fields : field.fields}"
+                                                        inpId="fromSelect" placeholder="Type to filter list.."
+                                                        noInfoText="No Match Found"
+                                                        selectedItems="{!field.selectedItems}"
+                                                        selectedOptions="{!field.selectedOptions}" masterSelect="false"
+                                                        isMultiSelect="false" selectAll="false" singleSelect="true"
+                                                        onchange="{!c.handleFieldSelectionOnChange}"
+                                                        allowSorting="false" />
+                                                </aura:set>
+                                            </aura:if>
+                                        </div>
+                                    </aura:set>
+                                </aura:if>
+                            </aura:iteration>
+                            <!-- &nbsp;{!v.fieldTypeData.isShow} -->
+                            <div class="{!(v.fieldTypeData.isShow == true ? '': 'slds-hide')}">
+                                <lightning:layout horizontalAlign="start"
+                                    class="slds-text-align_center slds-p-top_small">
+                                    <lightning:layoutItem size="12">
+                                        You have selected the following field:
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+
+                                <lightning:layout horizontalAlign="start"
+                                    class="slds-m-top_medium slds-text-align_center">
+                                    <lightning:layoutItem size="12">
+                                        <div class="slds-inline-block slds-text-align_right">
+                                            <lightning:icon iconName="standard:folder" size="large"
+                                                class="slds-inline-block" />
+                                        </div>
+                                        <div class="slds-inline-block slds-text-align_left slds-m-left_small">
+                                            <p>{!v.fieldTypeData.label}</p>
+                                            <p>API Name: {!v.fieldTypeData.value}</p>
+                                            <p>Type: {!v.fieldTypeData.type}</p>
+                                        </div>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-modal__footer">
+                        <lightning:button label="Cancel" onclick="{!c.handleFieldSelectionCancel}" />
+                        <lightning:button variant="brand" label="Choose" onclick="{!c.handleFieldSelectionSave}"
+                            disabled="{!not(v.fieldTypeData.isShow)}" />
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+        </aura:if>
+    </div>
+</aura:component>

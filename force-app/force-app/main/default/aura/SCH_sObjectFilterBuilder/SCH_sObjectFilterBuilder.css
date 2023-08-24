@@ -1,0 +1,57 @@
+.THIS .slds-action-pointer .slds-input__icon_right {
+    margin-top: -9px;
+}
+
+.THIS .label {
+    display: none;
+}
+
+.THIS .slds-action-pointer {
+    cursor: pointer;
+}
+
+.THIS #modal-field-select-content .slds-box {
+    min-height: 275px;
+}
+
+.THIS .slds-inline-block {
+    display: inline-block;
+}
+
+.THIS .filter-add-new {
+    text-decoration: unset;
+}
+
+.THIS .error {
+    border-color: #be554b;
+    background-color: #f6e4e4;
+    color: #464646;
+    padding: 5px;
+    margin: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    line-height: 18px;
+}
+
+.THIS select:not(.slds-select) {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 0 25px 0 10px;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNzYgMjEwIj48cGF0aCBmaWxsPSIjNTU2OThkIiBkPSJNNTYgNTBoMTY0YzQgMCA4IDYgNCAxMGwtODAgOThjLTMgMy05IDMtMTIgMEw1MiA2MGMtNC00LTEtMTAgNC0xMHoiLz48L3N2Zz4=);
+    background-repeat: no-repeat;
+    background-position: 95% 55%;
+    background-size: var(--lwc-fontSizeTextXLarge, 1.25rem) var(--lwc-fontSizeTextXLarge, 1.25rem), 100% 100%;
+}
+
+.THIS .filter-index {
+    margin: 1px 0;
+    line-height: var(--lwc-lineHeightButton, 1.875rem);
+    text-align: center;
+    background-color: var(--lwc-colorBrandDark, rgb(1, 118, 211));
+    border: none;
+    border-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+    color: var(--lwc-colorTextIconInverse, rgb(255, 255, 255));
+    font-family: var(--lwc-fontFamily, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol');
+}

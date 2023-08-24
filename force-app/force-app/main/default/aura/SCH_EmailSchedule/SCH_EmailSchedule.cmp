@@ -1,0 +1,32 @@
+<aura:component controller="SCH_SmartSchedulerController" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="String" name="relatedRecordId" default="" />
+    <aura:attribute type="Object" name="scheduleObj" />
+    <aura:attribute type="String" name="selectedActiveSectionName" default="" />
+    <aura:attribute type="String" name="emailTemplateId" default="" />
+    <aura:attribute type="String" name="sobjectApiName" default="" />
+    <aura:attribute type="String" name="resultSecondaryField" default="" />
+    <aura:attribute type="String" name="fieldSearchId" default="" />
+    <aura:attribute type="Integer" name="currentStep" default="0" />
+
+    <!--method-->
+    <aura:method name="validateScheduleForm" action="{!c.handleValidatedForm}" description="used to validate form" />
+
+    <!--markup-->
+    <lightning:layout multipleRows="true" class="slds-m-top_small">
+        <lightning:layoutItem size="12" flexibility="auto">
+            <c:lookup aura:id="lookup_emailtemplate" sobjectApiName="{!v.sobjectApiName}" label="Email Template"
+                iconName="standard:template" placeholder="Search Email Templates..."
+                resultSecondaryField="{!v.resultSecondaryField}" fieldSearchId="{!v.fieldSearchId}" required="true"
+                enableCreateNew="true" value="{!v.emailTemplateId}" onchange="{!c.handleEmailTemplateSelected}"
+                autoload="true" oncreatenew="{!c.handleCreateNewEmailTemplate}">
+            </c:lookup>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" flexibility="auto" padding="around-small" class="slds-text-align_right">
+            <button class="slds-button slds-button_neutral" onclick="{!c.handlePrevious}">Previous</button>
+            <button class="slds-button slds-button_brand" onclick="{!c.handleNext}">Next</button>
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>

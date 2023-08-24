@@ -1,0 +1,107 @@
+<aura:component controller="SCH_CtrlLtngAdmin" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="String" name="msgType" default="" />
+    <aura:attribute type="String" name="msgToShow" default="" />
+    <aura:attribute type="String" name="currentPage" default="configuration-settings" />
+    <aura:attribute type="SCH_Account" name="account" default="{}" />
+    <aura:attribute type="Map" name="packageData" default="{}" />
+
+    <aura:attribute type="List" name="options" />
+    <aura:attribute type="String" name="selectedOption" default="{!v.account.createLogInOrgAs }" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <div class="slds-p-top_small slds-p-left_large">
+        <lightning:breadcrumbs>
+            <lightning:breadcrumb label="Administration" />
+            <lightning:breadcrumb label="{!$Label.c.SCH_SS_action_configuration_settings_section_title}" />
+        </lightning:breadcrumbs>
+    </div>
+    <lightning:tabset selectedTabId="General">
+        <lightning:tab label="General" id="General">
+            <lightning:layout class="slds-p-around_large" multipleRows="true">
+                <lightning:layoutItem size="12">
+                    <lightning:layout aura:id="customToast"
+                        class=" slds-size_1-of-1 slds-align_absolute-center slds-hide">
+                        <aura:if isTrue="{!and(v.msgType != '', v.msgToShow != '')}">
+                            <c:SCH_ToastMessage messageType="{!v.msgType}" messageText="{!v.msgToShow}" />
+                        </aura:if>
+                    </lightning:layout>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="12">
+                    <lightning:layout aura:id="outerpanel" multipleRows="true">
+                        <lightning:layoutItem aura:id="accProgress" size="12" mediumDeviceSize="6" largeDeviceSize="5"
+                            class="slds-xx-large-size_4-of-12 slds-p-horizontal_medium slds-m-bottom_small">
+                            <div class="slds-box">
+                                <div class="slds-p-bottom_small slds-border_bottom">
+                                    <span class="slds-text-heading_small"><b>Execution Settings</b></span>
+                                    <aura:if isTrue="{!v.packageData.helpLinks.execution_settings_link}">
+                                        <c:knowledgeArticle linkURL="{!v.packageData.helpLinks.execution_settings_link}"
+                                            className="slds-p-bottom_xx-small" />
+                                    </aura:if>
+                                </div>
+                                <lightning:layout verticalAlign="center" horizontalAlign="spread"
+                                    class="slds-m-top_medium">
+                                    <lightning:layoutItem>
+                                        <label>
+                                            <b>Log Executions</b>
+                                            <aura:if isTrue="{!v.packageData.helpLinks.log_executions_text}">
+                                                <lightning:helptext
+                                                    content="{!v.packageData.helpLinks.log_executions_text}">
+                                                </lightning:helptext>
+                                            </aura:if>
+                                        </label>
+                                        <lightning:radioGroup name="LogExecution" label="Log Executions"
+                                            options="{!v.options}" value="{!v.selectedOption}" type="radio"
+                                            variant="label-hidden" onchange="{!c.handleRadioSelect}" />
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="12" mediumDeviceSize="6" largeDeviceSize="7"
+                            class="slds-xx-large-size_6-of-12">
+                            <lightning:layout multipleRows="true">
+                                <!-- Email Settings -->
+                                <lightning:layoutItem aura:id="currentPlan" size="12"
+                                    class="slds-p-horizontal_medium slds-m-bottom_small">
+                                    <div class="slds-box">
+                                        <div class="slds-p-bottom_small slds-border_bottom">
+                                            <span class="slds-text-heading_small"><b>Email Settings</b></span>
+                                            <aura:if isTrue="{!v.packageData.helpLinks.email_settings_link}">
+                                                <c:knowledgeArticle
+                                                    linkURL="{!v.packageData.helpLinks.email_settings_link}"
+                                                    className="slds-p-bottom_xx-small" />
+                                            </aura:if>
+                                        </div>
+                                        <lightning:layout verticalAlign="center" horizontalAlign="spread"
+                                            class="slds-m-top_medium">
+                                            <lightning:layoutItem>
+                                                <label>
+                                                    Include logs as Attachments
+                                                    <aura:if
+                                                        isTrue="{!v.packageData.helpLinks.include_logs_as_attachment_text}">
+                                                        <lightning:helptext
+                                                            content="{!v.packageData.helpLinks.include_logs_as_attachment_text}">
+                                                        </lightning:helptext>
+                                                    </aura:if>
+                                                </label>
+                                                <lightning:input type="toggle" label="Include logs as Attachments"
+                                                    name="input1" onchange="{!c.handleChange}" aura:id="attchlog"
+                                                    checked="{!v.account.attachLogRecordsInEmail}"
+                                                    variant="label-hidden" />
+                                            </lightning:layoutItem>
+                                        </lightning:layout>
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+                <lightning:spinner aura:id="spinner" size="large" class="slds-hide slds-is-fixed" variant="brand"
+                    alternativeText="loading..." />
+            </lightning:layout>
+        </lightning:tab>
+    </lightning:tabset>
+</aura:component>

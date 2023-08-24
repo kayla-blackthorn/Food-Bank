@@ -1,0 +1,254 @@
+<aura:component controller="SCH_SObjectFilterBuilderCtlr" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="String" name="recordId" />
+    <aura:attribute type="String" name="sObjectName" />
+    <aura:attribute type="String" name="_sObjectName" />
+    <aura:attribute type="String" name="customConditionalLogic" default="" />
+    <aura:attribute type="String" name="selectedCondition"
+        default="{!$Label.c.SCH_filter_builder_condition_all_selection}" />
+    <aura:attribute type="String" name="errorMessage" />
+    <aura:attribute type="Boolean" name="hasError" default="false" />
+
+    <aura:attribute type="Map" name="data" default="{}" />
+    <aura:attribute type="Map" name="conditionData" default="{}" />
+    <aura:attribute type="Map" name="fieldData" default="{}" />
+    <aura:attribute type="Map" name="fieldTypeData" default="{}" />
+    <aura:attribute type="Map" name="filterData" default="{}" />
+
+    <aura:attribute type="List" name="filters" default="[]" />
+    <aura:attribute type="List" name="_filters" default="[]" />
+
+    <!-- onchange type of component action, so that fire that on changing filter, operator and value -->
+    <aura:attribute type="Object" name="onchange" />
+
+    <!-- handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.handleInit}" />
+    <aura:handler name="change" value="{!v.sObjectName}" action="{!c.handleChangeSObjectName}" />
+
+    <aura:method name="getQueryFilter" action="{!c.handleGetQueryFilter}" />
+    <aura:method name="getFilters" action="{!c.handleGetFilters}" />
+    <div>
+        <aura:if isTrue="{!v.hasError}">
+            <div class="error">
+                {!v.errorMessage}
+            </div>
+        </aura:if>
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem size="12" class="slds-p-around_xx-small">
+                <label class="slds-label">Set Conditions<abbr class="slds-required">*</abbr></label>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" class="slds-p-around_xx-small ">
+                <lightning:layout multipleRows="true">
+                    <lightning:layoutItem size="1" class="slds-p-horizontal_x-small slds-p-bottom_xx-small">
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="3" class="slds-p-horizontal_x-small slds-p-bottom_xx-small">
+                        Field<abbr class="slds-required">*</abbr>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="3" class="slds-p-horizontal_x-small slds-p-bottom_xx-small">
+                        Operator<abbr class="slds-required">*</abbr>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="4" class="slds-p-horizontal_x-small slds-p-bottom_xx-small">
+                        Value<abbr class="slds-required">*</abbr>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="1" class="slds-p-horizontal_x-small slds-p-bottom_xx-small">
+                    </lightning:layoutItem>
+                    <aura:iteration items="{!v._filters}" var="filter" indexVar="index">
+                        <lightning:layoutItem size="1" class="slds-p-horizontal_xx-small">
+                            <div class="filter-index">{!index+1}</div>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="3" class="slds-p-horizontal_xx-small">
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-input-has-icon slds-input-has-icon_right slds-action-pointer"
+                                        onclick="{!c.handleFieldSelection}" data-index="{!index}">
+                                        <div type="text" class="slds-input slds-combobox__input slds-truncate"
+                                            title="{!filter.queryFieldTooltip}">{!filter.queryFieldTooltip}</div>
+                                        <lightning:icon iconName="utility:search"
+                                            class="slds-input__icon slds-input__icon_right" size="x-small" />
+                                    </div>
+                                </div>
+                            </div>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="3" class="slds-p-horizontal_xx-small">
+                            <select data-index="{!index}" class="slds-input" disabled="{!filter.operations.length == 1}"
+                                onchange="{!c.handleFilterChangeOperation}" title="{!filter.selectedOperatorLabel}">
+                                <aura:iteration items="{!filter.operations}" var="operation">
+                                    <option value="{!operation.value}"
+                                        selected="{!filter.selectedOperator == operation.value}">{!operation.label}
+                                    </option>
+                                </aura:iteration>
+                            </select>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="4" class="slds-p-horizontal_xx-small">
+                            <aura:if isTrue="{!filter.hideValue}">
+                                <input class="slds-input" disabled="true" />
+                                <aura:set attribute="else">
+                                    <aura:if isTrue="{!filter.operations.length == 1}">
+                                        <input class="slds-input" disabled="true" />
+                                        <aura:set attribute="else">
+                                            <aura:if isTrue="{!filter.fieldTypeDataSelected.ltngInput}">
+                                                <aura:if
+                                                    isTrue="{!filter.fieldTypeDataSelected.filtertype == 'combobox'}">
+                                                    <c:SCH_multiselect options="{!filter.options}"
+                                                        variant="label-hidden" selectAll="false"
+                                                        selectedItems="{!filter.selectedItems}"
+                                                        selectedOptions="{!filter.selectedOptions}"
+                                                        inpId="{!'_filters:'+index}" aura:id="comboboxMultiSelect"
+                                                        onchange="{!c.handleFieldDropdownChange}"></c:SCH_multiselect>
+                                                    <aura:set attribute="else">
+                                                        <aura:if
+                                                            isTrue="{!filter.fieldTypeDataSelected.filtertype == 'checkbox'}">
+                                                            <c:SCH_multiselect options="{!filter.options}"
+                                                                variant="label-hidden" selectAll="false"
+                                                                singleSelect="true" isMultiSelect="false"
+                                                                masterSelect="false"
+                                                                selectedItems="{!filter.selectedItems}"
+                                                                selectedOptions="{!filter.selectedOptions}"
+                                                                inpId="{!'_filters:'+index}"
+                                                                aura:id="checkboxMultiSelect"
+                                                                onchange="{!c.handleFieldDropdownChange}">
+                                                            </c:SCH_multiselect>
+                                                            <aura:set attribute="else">
+                                                                <lightning:input
+                                                                    type="{!filter.fieldTypeDataSelected.filtertype}"
+                                                                    value="{!filter.value}" variant="label-hidden"
+                                                                    onblur="{!c.handleFieldBlur}" />
+                                                            </aura:set>
+                                                        </aura:if>
+                                                    </aura:set>
+                                                </aura:if>
+                                                <aura:set attribute="else">
+                                                    <input class="slds-input" />
+                                                </aura:set>
+                                            </aura:if>
+                                        </aura:set>
+                                    </aura:if>
+                                </aura:set>
+                            </aura:if>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="1" class="slds-p-left_xx-small">
+                            <span data-index="{!index}">
+                                <aura:if isTrue="{!index > 0}">
+                                    <span data-index="{!index}">
+                                        <lightning:buttonIcon iconName="utility:close" size="medium"
+                                            variant="border-filled" alternativeText="remove" title="Remove"
+                                            onclick="{!c.handleRemoveFilter}" />
+                                    </span>
+                                </aura:if>
+                            </span>
+                        </lightning:layoutItem>
+                    </aura:iteration>
+                    <lightning:layoutItem size="12" class="slds-p-horizontal_xx-small">
+                        <a onclick="{!c.handleAddFilter}" class="filter-add-new">
+                            <lightning:icon iconName="utility:add" size="x-small" class="slds-p-left_xx-small" /> Add
+                            Row
+                        </a>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" class="slds-p-around_xx-small">
+                <label class="slds-label">Conditions<abbr class="slds-required">*</abbr></label>
+            </lightning:layoutItem>
+            <aura:iteration items="{!v.conditionData.conditions}" var="condition">
+                <lightning:layoutItem size="12" class="slds-p-horizontal_xx-small">
+                    <lightning:input type="radio" name="{!v.conditionData.name}" label="{!condition}"
+                        checked="{!v.selectedCondition == condition}" onclick="{!c.handleConditionChange}" />
+                </lightning:layoutItem>
+            </aura:iteration>
+            <aura:if isTrue="{!v.selectedCondition == v.conditionData.custom}">
+                <lightning:layoutItem size="12" mediumDeviceSize="6" class="slds-p-horizontal_xx-small">
+                    <lightning:input label="Logic" required="true" value="{!v.customConditionalLogic}"
+                        fieldLevelHelp="{!$Label.c.SCH_filter_builder_condition_custom_selection_info}"
+                        onblur="{!c.handleFieldBlur}" />
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+        <aura:if isTrue="{!v.fieldData.allowSelection}">
+            <section tabindex="-1" aria-labelledby="modal-field-select" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <lightning:buttonIcon iconName="utility:close" class="slds-modal__close" variant="border-inverse"
+                        alternativeText="close" title="Close" onclick="{!c.handleFieldSelectionCancel}" />
+
+                    <div class="slds-modal__header">
+                        <h1 id="modal-field-select" class="slds-modal__title slds-hyphenate">Select a Field</h1>
+                    </div>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-field-select-content">
+                        <div class="slds-text-title slds-p-bottom_small slds-p-left_xx-small">
+                            Select a field, then click Insert. Labels followed by a ">" indicate that there are more
+                            fields available
+                        </div>
+                        <div class="slds-box slds-box_small">
+                            <div class="slds-label slds-p-top_x-small slds-inline-block">{!v.data.sObjectApiName}
+                                <lightning:icon iconName="utility:right" size="x-small"
+                                    class="slds-p-top_small slds-vertical_small" />
+                            </div>
+                            <aura:iteration items="{!v.fieldData.selectedFields}" var="field" indexVar="findex">
+                                <aura:if isTrue="{!field.selected}">
+                                    <div class="slds-p-top_x-small slds-inline-block">
+                                        <a data-index="{!findex}"
+                                            onclick="{!c.handleFieldEdit}">{!field.field.label}</a>
+                                        <!-- {!field.field.label} -->
+                                        <aura:if
+                                            isTrue="{!and(v.fieldData.level != findex, v.fieldData.lastFieldIndex != findex)}">
+                                            <lightning:icon iconName="utility:right" size="x-small"
+                                                class="slds-p-top_small slds-p-horizontal_x-small" />
+                                        </aura:if>
+                                    </div>
+                                    <aura:set attribute="else">
+                                        <div class="slds-p-vertical_xx-small slds-inline-block">
+                                            <aura:if isTrue="{!field.loadingFields}">
+                                                <aura:set attribute="else">
+                                                    <c:SCH_multiselect variant="label-hidden"
+                                                        options="{! findex == 0 ? v.fieldData.fields : field.fields}"
+                                                        inpId="fromSelect" placeholder="Type to filter list.."
+                                                        noInfoText="No Match Found"
+                                                        selectedItems="{!field.selectedItems}"
+                                                        selectedOptions="{!field.selectedOptions}" masterSelect="false"
+                                                        isMultiSelect="false" selectAll="false" singleSelect="true"
+                                                        onchange="{!c.handleFieldSelectionOnChange}"
+                                                        allowSorting="false" />
+                                                </aura:set>
+                                            </aura:if>
+                                        </div>
+                                    </aura:set>
+                                </aura:if>
+                            </aura:iteration>
+                            <!-- &nbsp;{!v.fieldTypeData.isShow} -->
+                            <div class="{!(v.fieldTypeData.isShow == true ? '': 'slds-hide')}">
+                                <lightning:layout horizontalAlign="start"
+                                    class="slds-text-align_center slds-p-top_small">
+                                    <lightning:layoutItem size="12">
+                                        You have selected the following field:
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+
+                                <lightning:layout horizontalAlign="start"
+                                    class="slds-m-top_medium slds-text-align_center">
+                                    <lightning:layoutItem size="12">
+                                        <div class="slds-inline-block slds-text-align_right">
+                                            <lightning:icon iconName="standard:folder" size="large"
+                                                class="slds-inline-block" />
+                                        </div>
+                                        <div class="slds-inline-block slds-text-align_left slds-m-left_small">
+                                            <p>{!v.fieldTypeData.label}</p>
+                                            <p>API Name: {!v.fieldTypeData.value}</p>
+                                            <p>Type: {!v.fieldTypeData.type}</p>
+                                        </div>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-modal__footer">
+                        <lightning:button label="Cancel" onclick="{!c.handleFieldSelectionCancel}" />
+                        <lightning:button variant="brand" label="Choose" onclick="{!c.handleFieldSelectionSave}"
+                            disabled="{!not(v.fieldTypeData.isShow)}" />
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+        </aura:if>
+    </div>
+</aura:component>

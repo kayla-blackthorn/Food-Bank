@@ -1,0 +1,421 @@
+<aura:component controller="SCH_CtrlLtngAdmin" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="Boolean" name="isAuthUser" default="false" />
+    <aura:attribute type="SCH_Account" name="account" default="{}" />
+    <aura:attribute type="Integer" name="activeStep" default="1" />
+    <aura:attribute type="String" name="currentPage" default="" />
+    <aura:attribute type="String" name="userFirstName" />
+
+    <aura:attribute type="String" name="apiKey" default="****************" />
+    <aura:attribute type="String" name="msgType" default="" />
+    <aura:attribute type="String" name="msgToShow" default="" />
+
+    <aura:attribute type="Boolean" name="openEditModal" />
+    <aura:attribute type="Boolean" name="isSandbox" />
+
+    <aura:attribute type="List" name="authUsers" default="[]" />
+    <aura:attribute type="Map" name="custDetails" default="{}" />
+    <aura:attribute type="Map" name="packageData" default="{}" />
+
+    <!-- handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.packageData.hasAccountCredentials}"
+        action="{!c.handleHasCredentialsChange}" />
+    <aura:method name="authenticationclick" action="{!c.handleAuthenticationClick}"></aura:method>
+
+    <!-- BreadCrumbs -->
+    <div class="slds-p-top_small slds-p-left_large">
+        <lightning:breadcrumbs>
+            <lightning:breadcrumb label="Administration" />
+            <lightning:breadcrumb label="Account Info" />
+        </lightning:breadcrumbs>
+    </div>
+    <!-- Main Content -->
+    <lightning:layout class="slds-p-around_large" multipleRows="true">
+        <lightning:layoutItem size="12">
+            <lightning:layout aura:id="customToast" class=" slds-size_1-of-1 slds-align_absolute-center slds-hide">
+                <aura:if isTrue="{!and(v.msgType != '', v.msgToShow != '')}">
+                    <c:SCH_ToastMessage messageType="{!v.msgType}" messageText="{!v.msgToShow}" />
+                </aura:if>
+            </lightning:layout>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12">
+            <lightning:layout aura:id="outerpanel" multipleRows="true">
+                <lightning:layoutItem aura:id="accProgress" size="12" mediumDeviceSize="6" largeDeviceSize="5"
+                    class="{!' slds-xx-large-size_4-of-12 slds-p-horizontal_medium slds-m-bottom_small '+ if(and(v.packageData.isScheduleFeatureEnabled, v.packageData.hasAccountCredentials), '',' slds-hide')}">
+                    <div class="slds-box">
+                        <div class="slds-p-bottom_small slds-border_bottom">
+                            <span class="slds-text-heading_small"><b>Account Setup Progress</b></span>
+                        </div>
+                        <lightning:layout verticalAlign="center" horizontalAlign="spread" class="slds-m-top_medium">
+                            <lightning:layoutItem>
+                                <div class="slds-progress slds-progress_vertical">
+                                    <ol class="slds-progress__list">
+                                        <li
+                                            class="{!'slds-progress__item '+(v.activeStep > 0 ? 'slds-is-completed':(v.activeStep == 0 ? 'slds-is-active':''))}">
+                                            <aura:if isTrue="{!v.activeStep > 0}">
+                                                <lightning:icon iconName="utility:success" size="small"
+                                                    class="slds-progress__marker slds-progress__marker_icon" />
+                                                <aura:set attribute="else">
+                                                    <div class="slds-progress__marker"></div>
+                                                </aura:set>
+                                            </aura:if>
+                                            <lightning:layout class="slds-progress__item_content slds-grid_align-spread"
+                                                multipleRows="true">
+                                                <lightning:layoutItem size="12"
+                                                    class="section-status slds-text-title_caps">
+                                                    {!if((v.activeStep - 1) >=0,'Complete','Current Step')}
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="12" class="section-title">
+                                                    <aura:if isTrue="{!v.activeStep == 0}">
+                                                        <span onclick="{!c.handleProgessSelection}" class="action}"
+                                                            data-key="activeAccount">Activate Account</span>
+                                                        <aura:set attribute="else">
+                                                            <span data-key="activeAccount">Activate Account</span>
+                                                        </aura:set>
+                                                    </aura:if>
+                                                </lightning:layoutItem>
+                                            </lightning:layout>
+                                        </li>
+                                        <li
+                                            class="{!'slds-progress__item '+(v.activeStep > 1 ? 'slds-is-completed':(v.activeStep == 1 ? 'slds-is-active':''))}">
+                                            <aura:if isTrue="{!v.activeStep > 1}">
+                                                <lightning:icon iconName="utility:success" size="small"
+                                                    class="slds-progress__marker slds-progress__marker_icon" />
+                                                <aura:set attribute="else">
+                                                    <div class="slds-progress__marker"></div>
+                                                </aura:set>
+                                            </aura:if>
+                                            <lightning:layout class="slds-progress__item_content slds-grid_align-spread"
+                                                multipleRows="true">
+                                                <lightning:layoutItem size="12"
+                                                    class="section-status slds-text-title_caps">
+                                                    {!if((v.activeStep - 1) == 0, 'Next', if((v.activeStep - 2) >=
+                                                    0,'Complete','Current Step'))}
+                                                </lightning:layoutItem>
+                                                <lightning:layoutItem size="12" class="section-title">
+                                                    <aura:if isTrue="{!v.activeStep >= 2}">
+                                                        <span onclick="{!c.handleProgessSelection}" class="action"
+                                                            data-key="authenticatUser">Authenticate a User</span>
+                                                        <aura:set attribute="else">
+                                                            <span data-key="authenticatUser">Authenticate
+                                                                User</span>
+                                                        </aura:set>
+                                                    </aura:if>
+                                                </lightning:layoutItem>
+                                            </lightning:layout>
+                                        </li>
+                                    </ol>
+                                    <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" role="progressbar">
+                                        <span class="slds-assistive-text">Progress: 25%</span>
+                                    </div>
+                                </div>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="12" mediumDeviceSize="6" largeDeviceSize="7"
+                    class="slds-xx-large-size_6-of-12">
+                    <lightning:layout multipleRows="true">
+                        <!-- Account Details -->
+                        <lightning:layoutItem aura:id="currentPlan" size="12"
+                            class="{!'slds-p-horizontal_medium slds-m-bottom_small ' + if(and(v.packageData.isScheduleFeatureEnabled,v.packageData.hasAccountCredentials), '', ' slds-hide')}">
+                            <div class="slds-box" style="min-height:210px;">
+                                <div class="slds-p-bottom_small slds-border_bottom">
+                                    <span class="slds-text-heading_small"><b>Account Details</b></span>
+                                </div>
+                                <lightning:layout verticalAlign="center" class="slds-m-top_large ">
+                                    <lightning:layoutItem size="6" mediumDeviceSize="6" largeDeviceSize="3">
+                                        <span class="slds-text-color_weak">Account Number</span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="6" mediumDeviceSize="6" largeDeviceSize="4">
+                                        <span class="slds-text-color_weak">{!v.packageData.account.accountNumber}</span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="6" mediumDeviceSize="6" largeDeviceSize="5">
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+
+                                <lightning:layout verticalAlign="center"
+                                    class="{!'slds-m-top_small slds-p-bottom_small '}" multipleRows="true">
+                                    <lightning:layoutItem size="6" mediumDeviceSize="6" largeDeviceSize="3">
+                                        <span class="slds-text-color_weak">API Key</span>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="6" mediumDeviceSize="6" largeDeviceSize="4">
+                                        <div class="slds-text-color_weak slds-m-right_small slds-truncate lock-unlock-key"
+                                            aura:id="apikeypanel">{!v.apiKey}</div>
+                                        <aura:if isTrue="{!v.packageData.btSchedulePermissions.isBTScheduleAdmin}">
+                                            <div class="lock-unlock">
+                                                <a aura:id="unlock" onclick="{!c.handleUnlockApiKey}">
+                                                    <lightning:icon iconName="utility:unlock" size="x-small"
+                                                        alternativeText="unlock" />
+                                                </a>
+                                                <a aura:id="lock" class="slds-hide" onclick="{!c.handleLockApiKey}">
+                                                    <lightning:icon iconName="utility:lock" size="x-small"
+                                                        alternativeText="lock" />
+                                                </a>
+                                            </div>
+                                        </aura:if>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="12" largeDeviceSize="5"
+                                        class="slds-p-vertical_small slds-text-align_right">
+                                        <aura:if isTrue="{!v.packageData.btSchedulePermissions.isBTScheduleAdmin}">
+                                            <lightning:button label="Change Credentials" title="Edit"
+                                                onclick="{!c.openEditModal}" class="slds-m-left_small" />
+                                        </aura:if>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </lightning:layoutItem>
+
+                        <!-- Payment Methods -->
+                        <lightning:layoutItem aura:id="paymentMethods" size="12"
+                            class="{!and(v.packageData.isScheduleFeatureEnabled,v.packageData.hasAccountCredentials)?'slds-p-around_medium':'slds-p-around_medium slds-hide'}">
+                            <!-- Authenticated Users -->
+                            <div class="slds-box">
+                                <lightning:layout class="slds-p-bottom_small slds-border_bottom">
+                                    <lightning:layoutItem size="12">
+                                        <span class="slds-text-heading_small"><b>Authenticated User</b></span>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+
+                                <lightning:layout class="{!if(v.authUsers.length > 0, '','slds-hide')}">
+                                    <aura:iteration items="{!v.authUsers}" var="u" indexVar="i">
+                                        <lightning:layout class="slds-m-vertical_medium">
+                                            <lightning:layoutItem class="slds-m-right_large">
+                                                <ui:outputText value="{!u.firstName + ' ' + u.lastName}" />
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem class="slds-m-right_large">
+                                                <ui:outputText value="{!u.email}" />
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem class="slds-m-right_large">
+                                                <ui:outputText value="{!u.orgType}" />
+                                            </lightning:layoutItem>
+                                            <lightning:layoutItem>
+                                                <aura:if
+                                                    isTrue="{!v.packageData.btSchedulePermissions.isBTScheduleAdmin}">
+                                                    <lightning:buttonIcon name="{!u.salesforceId}"
+                                                        iconName="utility:delete" size="small" alternativeText="delete"
+                                                        variant="bare" onclick="{!c.deleteAuthenticatedUser}" />
+                                                </aura:if>
+                                            </lightning:layoutItem>
+                                        </lightning:layout>
+                                    </aura:iteration>
+                                </lightning:layout>
+
+                                <lightning:layout horizontalAlign="center"
+                                    class="{!if(v.authUsers.length > 0, 'slds-hide','')}">
+                                    <lightning:layoutItem class="slds-m-vertical_medium">
+                                        <aura:if isTrue="{!v.packageData.btSchedulePermissions.isBTScheduleAdmin}">
+                                            <lightning:button value="Authenticate Me" label="Authenticate Me"
+                                                variant="brand" onclick="{!c.handleAuthenticationClick}" />
+                                        </aura:if>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </div>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </lightning:layoutItem>
+        <lightning:spinner aura:id="spinner" size="large" class="slds-hide slds-is-fixed" variant="brand"
+            alternativeText="loading..." />
+    </lightning:layout>
+
+    <!-- Account Registration Modal -->
+    <div aura:id="registrationModal">
+        <div class="{!v.packageData.hasAccountCredentials?'slds-hide':''}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-registration"
+                aria-describedby="modal-content-registration" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-registration" class="slds-text-heading_medium slds-hyphenate">Account
+                            Registration</h2>
+                    </header>
+                    <div aura:id="registrationContent" class="slds-modal__content slds-p-around_medium"
+                        id="modal-content-registration">
+                        <p class="slds-text-heading_small slds-m-bottom_small">Hi {!v.packageData.userFirstName},</p>
+                        <p class="slds-text-heading_small slds-m-bottom_small">It looks like you've recently installed
+                            Blackthorn Base into this {!if(v.isSandbox, 'Sandbox', 'Production')} org and your account
+                            credentials need to be configured.</p>
+                        <p class="slds-text-heading_small">Do you have an existing Blackthorn Base account?</p>
+                    </div>
+
+                    <footer aura:id="registrationFooter" class="slds-modal__footer">
+                        <lightning:button label="Yes, I have an account" variant="neutral"
+                            onclick="{!c.handleRegistrationYes}" />
+                        <lightning:button label="No, I need an account" variant="brand"
+                            onclick="{!c.handleRegistrationNo}" />
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </div>
+
+    <!-- Input Credentials Modal -->
+    <div aura:id="inputCredentialsModal" class="slds-hide">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-input-credentials"
+            aria-describedby="modal-content-input-credentials" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-input-credentials" class="slds-text-heading_medium slds-hyphenate">Account
+                        Registration</h2>
+                </header>
+                <div aura:id="inputCredentialsContent" class="slds-modal__content slds-p-around_medium"
+                    id="modal-content-input-credentials">
+                    <lightning:layout>
+                        <lightning:layoutItem class="slds-p-horizontal_small slds-m-bottom_large">
+                            <span class="slds-text-color_weak">If you already have a Blackthorn Base account go
+                                ahead
+                                and enter your account credentials below.</span>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                    <lightning:layout>
+                        <lightning:layoutItem class="slds-size_1-of-2 slds-p-horizontal_small">
+                            <ui:inputText aura:id="inputCredentialsAccountNumber" label="Account Number"
+                                labelClass="slds-text-title_caps" class="slds-input" />
+                        </lightning:layoutItem>
+
+                        <lightning:layoutitem class="slds-size_1-of-2 slds-p-horizontal_small">
+                            <ui:inputText aura:id="inputCredentialsApiKey" label="API Key"
+                                labelClass="slds-text-title_caps" class="slds-input" />
+                        </lightning:layoutitem>
+                    </lightning:layout>
+
+                    <lightning:spinner aura:id="accRegistrationSpinner" size="large" variant="brand"
+                        class="slds-hide slds-is-fixed" alternativeText="loading..." />
+                </div>
+                <footer aura:id="inputCredentialsFooter" class="slds-modal__footer">
+                    <lightning:button label="Back" variant="brand" onclick="{!c.handleInputCredentialsBack}" />
+                    <lightning:button label="Save" variant="brand" onclick="{!c.handleInputCredentialsSave}" />
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+
+    </div>
+
+    <!-- Production Registration Modal -->
+    <div aura:id="prodRegistrationModal" class="slds-hide">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-prod-registration"
+            aria-describedby="modal-content-prod-registration" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <span class="slds-size_5-of-6">
+                        <h2 id="modal-heading-prod-registration" class="slds-text-heading_medium slds-hyphenate">
+                            Account
+                            Registration</h2>
+                    </span>
+                    <span class="slds-size_1-of-6"></span>
+                </header>
+                <div aura:id="prodRegistrationContent" class="slds-modal__content slds-p-around_medium"
+                    id="modal-content-prod-registration">
+                    <p class="slds-text-color_weak slds-m-bottom_small">You can easily activate a new Blackthorn
+                        Base account here.</p>
+                    <lightning:layout class="slds-m-top_small">
+                        <lightning:layoutItem class="slds-m-right_small">
+                            <ui:inputCheckbox aura:id="activateCheck" change="{!c.handleActivationClick}" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem>
+                            <span class="slds-text-color_weak">
+                                I have read and agree to Blackthorn Base's <a
+                                    href="{!v.packageData.helpLinks.Terms_of_Service}" target="_blank">Terms of
+                                    Service</a>
+                                and <a href="{!v.packageData.helpLinks.Privacy_Policy}" target="_blank">Privacy
+                                    Policy</a>.
+                            </span>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                    <lightning:spinner aura:id="prodRegistrationSpinner" size="large" variant="brand"
+                        class="slds-hide slds-is-fixed" alternativeText="loading..." />
+                </div>
+                <footer aura:id="prodRegistrationFooter" class="slds-modal__footer">
+                    <lightning:button label="Back" variant="brand" onclick="{!c.handleProdRegistrationBack}" />
+                    <lightning:button aura:id="activateButton" label="Activate Now" variant="brand" disabled="true"
+                        onclick="{!c.handleProdRegistrationActivate}" />
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+
+    <!-- Sandbox Registration Modal -->
+    <div aura:id="sandboxRegistrationModal" class="slds-hide">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-sandbox-registration"
+            aria-describedby="modal-content-sandbox-registration" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <span class="slds-size_5-of-6">
+                        <h2 id="modal-heading-sandbox-registration" class="slds-text-heading_medium slds-hyphenate">
+                            Account Registration - Sandbox or Developer Org</h2>
+                    </span>
+                    <span class="slds-size_1-of-6"></span>
+                </header>
+                <div aura:id="sandboxRegistrationContent" class="slds-modal__content slds-p-around_medium"
+                    id="modal-content-sandbox-registration">
+                    <p class="slds-text-color_weak slds-m-bottom_small">Sorry! We're not able to activate your new
+                        account from a Sandbox or Developer Edition org. We'll need to collect a few details first.
+                    </p>
+                    <p class="slds-text-color_weak slds-m-bottom_small">Please get in touch with <a
+                            href="{!v.packageData.helpLinks.BT_Support_Team}" target="_blank">Support Team</a> and
+                        follow the
+                        instructions.
+                    </p>
+                    <p class="slds-text-color_weak slds-m-bottom_small">We'll have you up and running very soon!</p>
+                </div>
+
+                <footer aura:id="sandboxRegistrationFooter" class="slds-modal__footer">
+                    <lightning:button label="Back" variant="brand" onclick="{!c.handleSandboxRegistrationBack}" />
+                    <lightning:button label="Support Team" variant="brand"
+                        onclick="{!c.handleSandboxRegistrationEmail}" />
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+
+    <!-- Update Credentials Modal -->
+    <aura:if isTrue="{!v.openEditModal}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container Errorcontainer">
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close" onclick="{!c.closeModel}" alternativeText="close"
+                        variant="bare-inverse" class="slds-modal__close" />
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Modify Credentials
+                    </h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" style="overflow-x: auto;">
+                    <div class="slds-m-bottom_medium slds-text-color_destructive">
+                        <p>It's rare to need to update your account credentials. You should only do this if you have
+                            a
+                            valid reason. Entering the wrong
+                            credentials could cause a serious disruption to your Schedule.</p>
+                    </div>
+                    <lightning:input aura:id="accountNumberInputUpdate" type="text" name="accountnumber"
+                        label="Account Number" required="true" minlength="5" />
+                    <lightning:input aura:id="apiKeyInputUpdate" class="slds-m-bottom_small" type="text" label="API key"
+                        name="apikey" required="true" minlength="10" />
+                    <lightning:input aura:id="confirm-change-credentials" type="checkbox"
+                        label="I confirm that the new credentials I am entering are for a valid Blackthorn Base account. I understand this action can cause significant disruption."
+                        name="confirm-change-credentials" checked="false" required="true"
+                        messageWhenValueMissing="You must check this to confirm." />
+                </div>
+                <footer class="slds-modal__footer">
+                    <span style="margin-right: 2%;color: red;">{!v.errormessage}</span>
+                    <div style="display:inline-block; margin-right:10px; margin-left:-10px;">
+                        <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{!c.closeModel}" />
+                    </div>
+                    <div style="display:inline-block">
+                        <lightning:button variant="destructive" label="Proceed" title="Proceed"
+                            onclick="{!c.updateCredentials}" />
+                    </div>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+</aura:component>

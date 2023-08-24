@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Branding_Settings_Compact_Layout</fullName>
+    <fields>Name</fields>
+    <fields>Default__c</fields>
+    <fields>LastModifiedById</fields>
+    <fields>OwnerId</fields>
+    <label>Branding Settings Compact Layout</label>
+</CompactLayout>

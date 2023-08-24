@@ -1,0 +1,223 @@
+<aura:component controller="SCH_SmartSchedulerController" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute name="isShowCreateNewSchedule" type="boolean" default="false" />
+    <aura:attribute name="data" type="List" />
+    <aura:attribute name="columns" type="List" />
+    <aura:attribute name="packageData" type="Map" default="{}" />
+    <aura:attribute name="allowSchedule" type="Boolean" />
+    <aura:attribute name="helpLinks" type="Map" default="{}" />
+    <aura:attribute name="currentPage" type="String" default="account-info" />
+    <aura:attribute name="existingScheduleId" type="String" />
+
+    <aura:attribute name="showFilter" type="boolean" default="false" />
+    <aura:attribute name="isIncludeArchived" type="boolean" default="false" />
+    <aura:attribute name="selectedScheduleTypeOptions" type="List" default="['object']" />
+    <aura:attribute name="selectedActionTypeOptions" type="List" default="['sms','email']" />
+    <aura:attribute name="selectedStatusOptions" type="List" default="['active','draft']" />
+
+    <aura:attribute name="recipientObjectName" type="String" />
+    <aura:attribute name="fieldNameToShow" type="String" />
+    <aura:attribute name="isShowTotalRecipientsModal" type="boolean" default="false" />
+    <aura:attribute name="filter" type="String" />
+    <aura:attribute name="current_page" type="Integer" default="1" />
+    <aura:attribute name="page_size" type="Integer" default="15" />
+    <aura:attribute name="enableInfiniteLoading" type="Boolean" default="true" />
+    <aura:attribute name="showAllExecution" type="Boolean" default="false" />
+    <aura:attribute name="isBack" type="Boolean" default="false" />
+    <aura:attribute name="scheduleData" type="Object" />
+    <aura:attribute name="isShowConfirmModal" type="Boolean" default="false" />
+    <aura:attribute name="confirm_data" type="Object" />
+    <aura:attribute name="account" type="SCH_Account" default="{}" />
+    <aura:attribute name="totalRecords" type="Integer" default="0" />
+
+    <!--handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.isShowCreateNewSchedule}" action="{!c.handleRefreshData}" />
+    <aura:handler name="change" value="{!v.isShowConfirmModal}" action="{!c.handleRefreshData}" />
+
+    <!--markup-->
+    <aura:if isTrue="{!not(empty(v.spinner))}">
+        <lightning:spinner aura:id="spinner" alternativeText="Loading" size="large" class="slds-is-fixed" />
+    </aura:if>
+
+    <aura:if isTrue="{!and(and(v.account.accountConfigured, v.account.isUserAuthenticated), 
+        and(v.account.isAuthenticatedUserActive, v.account.disallowScheduler))}">
+        <aura:if isTrue="{!and(v.disallowActions, v.allowSchedule)}">
+            <aura:set attribute="else">
+                <p class="slds-text-body_small">
+                <div>
+                    <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                        <span class="slds-assistive-text">warning</span>
+                        <lightning:icon iconName="utility:warning" class="slds-m-right_x-small"
+                            alternativeText="setup incomplete" title="" size="x-small" />
+                        <h2 class="textey-d-initial">
+                            {!v.account.actionDisableInfo}
+                            <aura:if isTrue="{!v.packageData.isBTScheduleAdmin == true}">
+                                {!v.account.adminSuffix}<a href="{!v.helpLinks.BT_Support_Team}"
+                                    target="_blank">{!v.account.linkLabel}</a>.
+                            </aura:if>
+                            <aura:if isTrue="{!v.packageData.isBTScheduleAdmin == false}">
+                                {!v.account.nonAdminSuffix}
+                            </aura:if>
+                        </h2>
+                    </div>
+                </div>
+                </p>
+            </aura:set>
+        </aura:if>
+    </aura:if>
+
+    <div class="slds-p-top_small slds-p-left_large">
+        <lightning:breadcrumbs>
+            <lightning:breadcrumb label="Administration" />
+            <lightning:breadcrumb label="{!$Label.c.SCH_SS_action_create_schedule_section_title}" />
+        </lightning:breadcrumbs>
+    </div>
+    <div class="slds-p-top_small">
+        <aura:if isTrue="{!and(v.allowSchedule==false, v.account.scheduleFeatureEnabled)}">
+            <lightning:layout multipleRows="true" class="slds-m-top_small">
+                <lightning:layoutItem size="12" flexibility="auto">
+                    <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                        <span class="slds-assistive-text">warning</span>
+                        <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small"
+                            title="Description of icon when needed">
+                            <lightning:icon iconName="utility:warning" size="small" />
+                        </span>
+                        <h2>
+                            <aura:if isTrue="{!v.packageData.isInstalled}">
+                                <!-- Package install validation -->
+                                <aura:if isTrue="{!v.packageData.isBTScheduleAdmin}">
+                                    <!-- BT Messaging Admin validation error message -->
+                                    {!v.helpLinks.btschedule_not_configure_admin}<a href="javascript:void(0);"
+                                        onclick="{!c.manageAuthenticatedUser}">{!v.helpLinks.btschedule_not_configure_admin_click_here_text}</a>
+                                    <aura:set attribute="else">
+                                        <!-- BT Messaging Non-admin validation error message -->
+                                        {!v.helpLinks.btschedule_not_configure}
+                                    </aura:set>
+                                </aura:if>
+                                <aura:set attribute="else">
+                                    <!-- Package not install validation -->
+                                    <aura:if isTrue="{!v.packageData.allowInstall}">
+                                        <!-- User can install BT Messaging -->
+                                        {!v.helpLinks.btschedule_not_installed_admin}<a href="javascript:void(0);"
+                                            onclick="{!c.manageAuthenticatedUser}">{!v.helpLinks.btschedule_not_installed_admin_click_here_text}</a>
+                                        <aura:set attribute="else">
+                                            <!-- User cannot install BT Messaging -->
+                                            {!v.helpLinks.btschedule_not_installed}
+                                        </aura:set>
+                                    </aura:if>
+                                </aura:set>
+                            </aura:if>
+                        </h2>
+                    </div>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </aura:if>
+        <lightning:layout class="{!(v.isShowCreateNewSchedule || !v.allowSchedule?'slds-hide':'')}" multipleRows="true">
+            <lightning:layoutItem size="12" class="slds-p-horizontal_medium slds-is-relative">
+                <div class="slds-box">
+                    <lightning:layout class="slds-p-bottom_small">
+                        <lightning:layoutItem size="12" mediumDeviceSize="10">
+                            <span
+                                class="slds-text-heading_small"><b>{!$Label.c.SCH_SS_action_create_schedule_section_title}</b></span>
+
+                            <!-- <c:KnowledgeArticle linkURL="{!v.knowledgeArticles.Scheduled_Jobs_for_Admin}" className="slds-float_right"/> -->
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="12" mediumDeviceSize="2" class="slds-text-align_right">
+                            <lightning:button label="{!v.account.createSchedulerLabel}" variant="brand"
+                                class="create-schedule"
+                                title="{!v.account.createSchedulerTitle + (v.account.disallowScheduler ? (v.packageData.isBTScheduleAdmin ? v.account.adminSuffix +v.account.linkLabel+'.' : v.account.nonAdminSuffix) : '')}"
+                                onclick="{!c.handleCreateNewSchedule}" disabled="{!v.account.disallowScheduler}" />
+                            <lightning:buttonIconStateful iconName="utility:refresh" onclick="{!c.handleRefresh}"
+                                class="slds-m-left_x-small" />
+                            <lightning:buttonIconStateful iconName="utility:filterList" selected="{!v.showFilter}"
+                                onclick="{!c.handleFilterClick}" class="slds-m-left_x-small" />
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                    <lightning:layout class="slds-border_bottom">
+                        <lightning:layoutItem class="" size="12">
+                            <p class="">
+                                <lightning:layout class="slds-p-bottom_small">
+                                    <lightning:layoutItem size="12">
+                                        <div class="slds-notify slds-notify_alert slds-alert_warning custom-time_zone"
+                                            role="alert">
+                                            <span class="slds-assistive-text">info</span>
+                                            <span
+                                                class="slds-icon_container slds-icon-utility-info slds-m-right_x-small"
+                                                title="Description of icon when needed">
+                                                <lightning:icon iconName="utility:info" size="x-small" />
+                                            </span>
+                                            <h2>
+                                                <p
+                                                    class="slds-text-title slds-text-body_small slds-p-vertical_x-small slds-text-align_center custom-font_bold">
+                                                    <span>Logged In User Timezone - {!v.packageData.userTimeZone}</span>
+                                                </p>
+                                            </h2>
+                                        </div>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                                <aura:if isTrue="{!v.data.length>0}">
+                                    <p class="slds-text-title slds-text-body_small slds-p-vertical_x-small">
+                                        {!v.data.length} of {!v.totalRecords+' '+(v.data.length>1?'Items':'Item')} •
+                                        Sorted by Status, Schedule Time</p>
+                                </aura:if>
+                            <div class="datatable-panel">
+                                <lightning:datatable data="{! v.data }" columns="{! v.columns }" keyField="Id"
+                                    hideCheckboxColumn="true" showRowNumberColumn="true"
+                                    onrowaction="{!c.handleScheduleRowAction}"
+                                    enableInfiniteLoading="{!v.enableInfiniteLoading}"
+                                    onloadmore="{! c.handleLoadMoreData }" />
+                            </div>
+                            <aura:if isTrue="{!v.data.length==0}">
+                                <div style="background: #f3f3f3;">
+                                    <div class="slds-text-align_center slds-p-around_medium">
+                                        <p>{!$Label.c.SCH_SS_no_scheduled_actions}</p>
+                                    </div>
+                                </div>
+                            </aura:if>
+                            </p>
+                        </lightning:layoutItem>
+                        <aura:if isTrue="{!v.showFilter}">
+                            <c:SCH_ScheduleFilter showFilter="{!v.showFilter}"
+                                selectedActionTypeOptions="{!v.selectedActionTypeOptions}"
+                                selectedScheduleTypeOptions="{!v.selectedScheduleTypeOptions}"
+                                selectedStatusOptions="{!v.selectedStatusOptions}"
+                                isIncludeArchived="{!v.isIncludeArchived}" onApply="{!c.handleApplyFilter}" />
+                        </aura:if>
+                    </lightning:layout>
+                </div>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+
+    <aura:if isTrue="{!v.isShowCreateNewSchedule}">
+        <div class="slds-p-horizontal_medium">
+            <c:SCH_SmartScheduler isShowCreateNewMessageComp="{!v.isShowCreateNewSchedule}"
+                existingScheduleId="{!v.existingScheduleId}" isBack="{!v.isBack}" account="{!v.account}"
+                isBTScheduleAdmin="{!v.packageData.isBTScheduleAdmin}" />
+        </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.isShowTotalRecipientsModal}">
+        <c:SCH_TotalRecipients selectScheduleAttendees="{!v.recipientObjectName}"
+            isShowViewRecipientsModal="{!v.isShowTotalRecipientsModal}" fieldNameToShow="{!v.fieldNameToShow}"
+            filter="{!v.filter}"
+            nameFieldToReplace="{!(v.recipientObjectName=='conference360__Attendee__c'?'conference360__Attendee_Full_Name__c':(v.recipientObjectName=='conference360__Session_Attendee__c'?'conference360__Session_Attendee_Full_Name__c':''))}" />
+    </aura:if>
+
+    <aura:if isTrue="{!v.showAllExecution}">
+        <div class="execution-details">
+            <c:SCH_ExecutionsSchedule scheduleData="{!v.scheduleData}" showAllExecution="{!v.showAllExecution}" />
+        </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.isShowConfirmModal}">
+        <c:SCH_ConfirmPopup isShowConfirmModal="{!v.isShowConfirmModal}" isBack="{!v.isBack}"
+            title="{!v.confirm_data.title}" message_body="{!v.confirm_data.body}" btn_name="{!v.confirm_data.btn_name}"
+            action_name="{!v.confirm_data.action_name}" salesforce_id="{!v.confirm_data.salesforce_id}"
+            status="{!v.confirm_data.status}" />
+    </aura:if>
+
+</aura:component>

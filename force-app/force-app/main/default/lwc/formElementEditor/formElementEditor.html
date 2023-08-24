@@ -1,0 +1,162 @@
+<template>
+    <lightning-layout multiple-rows="true" pull-to-boundary="small">
+        <template if:true={fieldsVisibility.type}>
+            <lightning-layout-item size="6" padding="horizontal-small">
+                <lightning-combobox
+                    required
+                    name="type"
+                    label={labels.type}
+                    value={mutableElement.type}
+                    placeholder="Select question type"
+                    options={questionTypes}
+                    onchange={setQuestionType}
+                ></lightning-combobox>
+            </lightning-layout-item>
+        </template>
+
+        <template if:true={fieldsVisibility.required}>
+            <lightning-layout-item size="6" padding="horizontal-small">
+                <lightning-combobox
+                    name="required"
+                    label={labels.required}
+                    value={mutableElement._required}
+                    placeholder="Is required"
+                    options={yesOrNoOptions}
+                    onchange={setRequired}
+                ></lightning-combobox>
+            </lightning-layout-item>
+        </template>
+
+        <template if:true={fieldsVisibility.question}>
+            <lightning-layout-item size="12" padding="horizontal-small">
+                <lightning-input
+                    name="question"
+                    type="text"
+                    label={labels.question}
+                    placeholder="Enter your question to ask"
+                    value={mutableElement.question}
+                    onchange={setQuestion}
+                    required="true"
+                ></lightning-input>
+            </lightning-layout-item>
+        </template>
+
+        <!-- This is a presentation field for divider only, it's the same as question field -->
+        <template if:true={isDivider}>
+            <lightning-layout-item size="12" padding="horizontal-small">
+                <lightning-input
+                    name="dividerInfo"
+                    type="text"
+                    label="Additional Information to display below the divider"
+                    value={mutableElement.question}
+                    onchange={setQuestion}
+                ></lightning-input>
+            </lightning-layout-item>
+        </template>
+
+        <template if:true={fieldsVisibility.questionRichtext}>
+            <lightning-layout-item size="12" padding="horizontal-small">
+                <lightning-input-rich-text
+                    label={labels.questionRichtext}
+                    label-visible="true"
+                    value={mutableElement.questionRichtext}
+                    onchange={setQuestionRichtext}
+                ></lightning-input-rich-text>
+            </lightning-layout-item>
+        </template>
+
+        <template if:true={fieldsVisibility.mapsToObject}>
+            <lightning-layout-item size="6" padding="horizontal-small">
+                <lightning-combobox
+                    name="mapsToObject"
+                    label={labels.mapsToObject}
+                    value={mutableElement.mapsToObject}
+                    placeholder="Select an object"
+                    options={mapsToObjectOptions}
+                    onchange={setMapsToObject}
+                ></lightning-combobox>
+            </lightning-layout-item>
+        </template>
+
+        <template if:true={fieldsVisibility.mapsToField}>
+            <lightning-layout-item size="6" padding="horizontal-small">
+                <lightning-combobox
+                    name="mapsToField"
+                    label={labels.mapsToField}
+                    value={mutableElement.mapsToField}
+                    placeholder="Select a field"
+                    options={mapsToFieldOptions}
+                    onchange={setMapsToField}
+                ></lightning-combobox>
+            </lightning-layout-item>
+        </template>
+
+        <template if:true={fieldsVisibility.bigListGroupId}>
+            <lightning-layout-item size="6" padding="horizontal-small">
+                <c-lookup 
+                    sobject-api-name={formBigListGroupApiName}
+                    icon-name="custom:custom18"
+                    label={labels.bigListGroupId}
+                    value={mutableElement.bigListGroupId}
+                    placeholder="Select Form Big List Group"
+                    enable-create-new="true"
+                    autoload="true"
+                    required
+                    onchange={setBigListGroupId}
+                    oncreatenew={openCreateNewBigListGroupModal}
+                ></c-lookup>
+            </lightning-layout-item>
+        </template>
+
+        <template if:true={fieldsVisibility.picklistValues}>
+            <lightning-layout-item size="6" padding="horizontal-small">
+                <lightning-textarea
+                    label={labels.picklistValues}
+                    value={mutableElement.picklistValues}
+                    placeholder="Add values that can be selected in the picklist"
+                    onchange={setPicklistValues}
+                    required
+                ></lightning-textarea>
+            </lightning-layout-item>
+        </template>
+
+        <template if:true={fieldsVisibility.defaultValue}>
+            <lightning-layout-item size="6" padding="horizontal-small">
+                <lightning-input
+                    label={labels.defaultValue}
+                    value={mutableElement.defaultValue}
+                    placeholder="Display a value by default"
+                    onchange={setDefaultValue}
+                ></lightning-input>
+            </lightning-layout-item>
+        </template>
+
+        <template if:true={fieldsVisibility.defaultCheckboxValue}>
+            <lightning-layout-item size="6" padding="horizontal-small">
+                <lightning-combobox
+                    label={labels.defaultCheckboxValue}
+                    value={mutableElement._defaultCheckboxValue}
+                    placeholder="Display a value by default"
+                    options={checkboxOptions}
+                    onchange={setDefaultCheckboxValue}
+                ></lightning-combobox>
+            </lightning-layout-item>
+        </template>
+
+        <template if:true={fieldsVisibility.hint}>
+            <lightning-layout-item size="12" padding="horizontal-small">
+                <lightning-textarea
+                    label={labels.hint}
+                    value={mutableElement.hint}
+                    placeholder="This text will be displayed in field before entering an answer"
+                    onchange={setHint}
+                ></lightning-textarea>
+            </lightning-layout-item>
+        </template>
+    </lightning-layout>
+    <c-form-element-conditions-editor
+        element={element}
+        conditions={conditions}
+        available-elements={availableElements}
+    ></c-form-element-conditions-editor>
+</template>

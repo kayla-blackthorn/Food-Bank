@@ -1,0 +1,39 @@
+<template>
+    <lightning-modal-header label={description}></lightning-modal-header>
+    <lightning-modal-body>
+        <template if:true={deleting}>
+            <lightning-spinner alternative-text="Deleting" size="small"></lightning-spinner>
+        </template>
+        <div class="slds-grid slds-grid_align-center">
+            <div>
+                <div>
+                    {message}
+                </div>
+                <div class="slds-m-top_x-small">
+                    <ul>
+                        <li>Name: {element.name}</li>
+                        <li>Question: {element.question}</li>
+                    </ul>
+                </div>
+                <template if:false={deletable}>
+                    <div class="slds-m-top_x-small">{actionMessage}</div>
+                </template>
+            </div>
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <template if:true={deletable}>
+            <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_small"></lightning-button>
+            <lightning-button variant="brand" label={deleteButtonLabel} onclick={handleDelete}></lightning-button>
+        </template>
+        <template if:false={deletable}>
+            <template if:true={requireInspection}>
+                <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_small"></lightning-button>
+                <lightning-button variant="brand" label="Inspect the Element" onclick={handleInspect}></lightning-button>
+            </template>
+            <template if:false={requireInspection}>
+                <lightning-button variant="brand" label="Got it" onclick={handleCancel}></lightning-button>
+            </template>
+        </template>
+    </lightning-modal-footer>
+</template>

@@ -1,0 +1,92 @@
+<aura:component controller="SCH_SmartSchedulerController" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="String" name="msgType" default="" />
+    <aura:attribute type="String" name="msgToShow" default="" />
+    <aura:attribute type="String" name="selectScheduleAttendees" />
+    <aura:attribute type="String" name="baseObject" default="" />
+    <aura:attribute type="String" name="selectedDateTimeField" />
+    <aura:attribute type="boolean" name="isShowWarningMsg" default="false" />
+    <aura:attribute type="List" name="daysOptions"
+        default="[{'label': 'Days', 'value': 'days'},{'label': 'Hours', 'value': 'hours'},{'label': 'Minutes', 'value': 'minutes'}]" />
+    <aura:attribute type="List" name="beforeAfterOptions"
+        default="[{'label': 'Before', 'value': 'before'},{'label': 'After', 'value': 'after'}]" />
+    <aura:attribute type="List" name="dateTimeFields" default="[]" />
+    <aura:attribute type="String" name="selectedActiveSectionName" default="" />
+    <aura:attribute type="Object" name="scheduleObj" default="{}" />
+    <aura:attribute type="String" name="selectedBeforeAfterOptions" default="before" />
+    <aura:attribute type="String" name="selecteddaysOptions" default="days" />
+    <aura:attribute type="String" name="selectedday" />
+    <aura:attribute type="String" name="selectedDateTime" />
+    <aura:attribute type="boolean" name="isExecuteNow" default="false" />
+    <aura:attribute type="Map" name="eventInfo" default="{}" />
+    <aura:attribute type="Integer" name="currentStep" default="0" />
+
+    <!--handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.isExecuteNow}" action="{!c.handleExecuteNowUpdate}" />
+
+    <aura:method name="validateScheduleNowForm" action="{!c.handleScheduleNext}"
+        description="used to validate Schedule form" />
+
+    <!--markup-->
+    <lightning:layout multipleRows="true" class="slds-m-top_small">
+        <aura:if isTrue="{!v.isShowWarningMsg}">
+            <lightning:layoutItem size="12" flexibility="auto">
+                <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                    <span class="slds-assistive-text">info</span>
+                    <span class="slds-icon_container slds-icon-utility-info slds-m-right_x-small"
+                        title="Description of icon when needed">
+                        <lightning:icon iconName="utility:info" size="x-small" />
+                    </span>
+                    <h2>This message is based on the Event's Timezone
+                        <aura:if isTrue="{!empty(v.eventInfo.conference360__Time_Zone__c)}">
+                            - <b>Not Selected</b>.
+                            <aura:set attribute="else">
+                                <b>{!v.eventInfo.conference360__Time_Zone__c}</b>.
+                            </aura:set>
+                        </aura:if>
+                    </h2>
+                </div>
+            </lightning:layoutItem>
+        </aura:if>
+        <lightning:layoutItem size="12" flexibility="auto" class="slds-m-top_small slds-m-bottom_xx-small">
+            <h1>Send {!v.scheduleObj.Action}</h1>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" flexibility="auto" class="slds-m-bottom_small">
+            <lightning:input type="radio" name="select" label="datetime" variant="label-hidden" aura:id="datetime_value"
+                class="display-inline" onchange="{!c.handleDateTimeChange}" />
+            <lightning:input type="datetime" name="input1" label="Enter a date/time value" variant="label-hidden"
+                class="display-inline" placeholder="Select a Date / Time" aura:id="schedule_date_time"
+                value="{!v.scheduleObj.Schedule_Date_Time}" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" flexibility="auto" class="slds-m-bottom_small">
+            <lightning:input type="radio" name="select" label="field" variant="label-hidden"
+                aura:id="datetime_beforeAfter" class="display-inline" onchange="{!c.handleDateTimeChange}" />
+            <span onkeypress="{!c.handleDaysChange}">
+                <lightning:input name="input1" label="days" type="number" variant="label-hidden"
+                    class="display-inline slds-m-right_xx-small custom-days-input_width"
+                    value="{!v.scheduleObj.Offset_Value}" />
+            </span>
+            <lightning:combobox name="progress" label="Days" value="{!v.scheduleObj.Offset_Type}" variant="label-hidden"
+                class="display-inline slds-m-right_xx-small" options="{! v.daysOptions }" />
+            <lightning:combobox name="progress" label="Before" value="{!v.scheduleObj.Offset}" variant="label-hidden"
+                class="display-inline slds-m-right_xx-small" options="{! v.beforeAfterOptions }" />
+            <lightning:combobox name="progress" label="Date/Time Field"
+                value="{!v.scheduleObj.Schedule_Date_Time_Field}" variant="label-hidden"
+                class="display-inline slds-m-right_xx-small" options="{! v.dateTimeFields }" />
+            <lightning:helptext content="Date/Time filter will apply depending on Base Object field update" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" flexibility="auto" class="slds-m-bottom_small">
+            <lightning:input type="radio" name="select" label="datetime_now" variant="label-hidden"
+                aura:id="datetime_now" class="display-inline" onchange="{!c.handleDateTimeChange}" />
+            <p class="display-inline">Now</p>
+            <lightning:helptext content="Execution will start after 2 min" />
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12" flexibility="auto" padding="around-small" class="slds-text-align_right">
+            <button class="slds-button slds-button_neutral" onclick="{!c.handlePrevious}">Previous</button>
+            <button class="slds-button slds-button_brand" onclick="{!c.handleNext}">Next</button>
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>

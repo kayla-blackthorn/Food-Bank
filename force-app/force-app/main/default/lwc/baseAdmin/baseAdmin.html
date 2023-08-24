@@ -1,0 +1,79 @@
+<template>
+    <template if:true={showSpinner}>
+        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+    </template>
+
+    <lightning-tabset variant="vertical">
+        <lightning-tab label={label.configTabset}>
+            <lightning-card title={label.btAdminTitle} icon-name="custom:custom67">
+                <ol class="slds-setup-assistant">
+                    <li class="slds-setup-assistant__item">
+                        <article class="slds-setup-assistant__step">
+                            <div class="slds-setup-assistant__step-summary">
+                                <div class="slds-media">
+                                    <div class="slds-media__figure">
+                                        <template if:false={isSysAdmin}>
+                                            <lightning-progress-ring value="75" variant="expired" size="large">
+                                            </lightning-progress-ring>
+                                        </template>
+                                        <template if:true={isSysAdmin}>
+                                            <!-- allow them to configure the permission if not system admin-->
+                                            <template if:true={isAuthorized}>
+                                                <lightning-progress-ring
+                                                    value="100"
+                                                    variant="base-autocomplete"
+                                                    size="large"
+                                                >
+                                                </lightning-progress-ring>
+                                            </template>
+                                            <template if:false={isAuthorized}>
+                                                <lightning-progress-ring value="100" size="large">
+                                                </lightning-progress-ring>
+                                            </template>
+                                        </template>
+                                    </div>
+                                    <div class="slds-media__body slds-m-top_x-small">
+                                        <div class="slds-media">
+                                            <div class="slds-setup-assistant__step-summary-content slds-media__body">
+                                                <h3
+                                                    class="slds-setup-assistant__step-summary-title slds-text-heading_small"
+                                                >
+                                                    {label.authorizeApp}
+                                                </h3>
+                                                <p class="admin-message-section">
+                                                    <template if:false={isSysAdmin}>
+                                                        {label.messageErrorSysAdmin}
+                                                    </template>
+                                                    <template if:true={isSysAdmin}> {authMessage} </template>
+                                                </p>
+                                                
+                                            </div>
+                                            <div class="slds-media__figure slds-media__figure_reverse">
+                                                <template if:false={isSysAdmin}>
+                                                    <lightning-button
+                                                        label={label.assignPermissionSetBtn}
+                                                        onclick={assignPermissionSet}
+                                                        variant="brand"
+                                                        class="permissionBtn"
+                                                    ></lightning-button>
+                                                </template>
+                                                <template if:true={isSysAdmin}>
+                                                    <lightning-button
+                                                        label={label.authorizeApp}
+                                                        onclick={authorizeByOAuth}
+                                                        variant="brand"
+                                                        class="authBtn"
+                                                    ></lightning-button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </li>
+                </ol>
+            </lightning-card>
+        </lightning-tab>
+    </lightning-tabset>
+</template>

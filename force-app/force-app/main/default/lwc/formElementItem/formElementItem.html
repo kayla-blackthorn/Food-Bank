@@ -1,0 +1,56 @@
+<template>
+    <div class={computedWrapperClass}>
+        <div class="container">
+            <div class={computedClass} style={shiftedStyle}>
+                <template if:true={message}>
+                    <div class="notify">
+                        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                            <span class="slds-assistive-text">warning</span>
+                            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Warning message">
+                                <lightning-icon icon-name="utility:warning" size="xx-small" alternative-text="Warning" title="Warning"></lightning-icon>
+                            </span>
+                            <h2>{message}</h2>
+                        </div>
+                    </div>
+                </template>
+                <div class={computedElementClass}>
+                    <template if:true={virtual}>
+                        <div class="slds-grid">
+                            <div class="slds-grow slds-no-space slds-grid slds-grid_vertical-align-center">
+                                <span class="slds-truncate">{label}</span>
+                            </div>
+                            <div class="slds-no-flex slds-p-left_x-small">
+                                <div style="height: 32px;"></div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false={virtual}>
+                        <div class="slds-grid">
+                            <div class="slds-grow slds-no-space slds-grid slds-grid_vertical-align-center">
+                                <span class="slds-truncate">{label}</span>
+                            </div>
+                            <template if:true={expandable}>
+                                <div class="slds-no-flex slds-p-left_x-small">
+                                    <lightning-button-group>
+                                        <lightning-button-icon onclick={handleToggleExpanded} icon-name={computedExpandedIcon}  variant="border-filled" alternative-text={computedExpandedLabel} size="medium" title={computedExpandedLabel}></lightning-button-icon>
+                                        <lightning-button-icon onclick={handleExpandOneLevel} icon-name="utility:chevrondown"  variant="border-filled" alternative-text="Expand one level" size="medium" title="Expand one level"></lightning-button-icon>
+                                    </lightning-button-group>
+                                </div>
+                            </template>
+                            <div class="slds-no-flex slds-p-left_x-small">
+                                <lightning-button-group>
+                                    <lightning-button-icon onclick={handleEditClicked} icon-name="utility:edit"  variant="border-filled" alternative-text="Edit form element" size="medium" title="Edit form element"></lightning-button-icon>
+                                    <lightning-button-icon onclick={handleDeleteClicked} icon-name="utility:delete"  variant="border-filled" alternative-text="Delete form element" size="medium" title="Delete the element"></lightning-button-icon>
+                                    <lightning-button-icon class="drag-button" onpointerdown={initializeDragging} icon-name="utility:drag_and_drop"  variant="border-filled" alternative-text="Drag and Drop" size="medium" title="Drag and Drop"></lightning-button-icon>
+                                </lightning-button-group>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <template if:true={dragging}>
+                <div class="placeholder slds-theme_default slds-box slds-box_x-small" style={placeholderStyle}></div>
+            </template>
+        </div>
+    </div>
+</template>

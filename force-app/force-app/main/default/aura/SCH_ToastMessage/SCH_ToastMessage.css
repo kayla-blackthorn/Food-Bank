@@ -1,0 +1,35 @@
+.THIS lightning-icon svg.slds-icon-text-default {
+    fill: white !important;
+}
+
+.THIS .uiMessage {
+    min-width: 400px;
+    padding: 10px;
+    z-index: 9999;
+}
+
+.THIS .uiMessage.error {
+    background: #a01c1c;
+    color: white;
+    font-weight: normal;
+}
+
+.THIS .uiMessage.confirm {
+    background: #155a15;
+    color: white;
+    font-weight: normal;
+}
+
+.THIS .uiMessage.info {
+    background: #04844b;
+    color: white;
+    font-weight: normal;
+}
+
+.THIS .toast-message {
+    margin-top: 5px;
+}
+
+.THIS.Textey-Message {
+    z-index: 9999;
+}

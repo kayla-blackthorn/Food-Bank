@@ -1,0 +1,242 @@
+<aura:component access="global" controller="SCH_SmartSchedulerController" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="String" name="recordId" />
+    <aura:attribute type="String" name="scheduleId" />
+    <aura:attribute type="String" name="existingScheduleId" />
+    <aura:attribute type="boolean" name="isDisabled" default="false" />
+    <aura:attribute type="boolean" name="isShowCreateNewMessageComp" default="false" />
+    <aura:attribute type="boolean" name="allowSchedule" default="true" />
+    <aura:attribute type="String" name="msgType" default="" />
+    <aura:attribute type="String" name="msgToShow" default="" />
+    <aura:attribute type="String" name="selectScheduleType" default="sms" />
+    <aura:attribute type="String" name="selectScheduleAttendees" default="conference360__Attendee__c" />
+    <aura:attribute type="String" name="selectScheduleTypeLabel" default="SMS" />
+    <aura:attribute type="String" name="selectScheduleAttendeesLabel" default="Event Attendees" />
+    <aura:attribute type="map" name="mapSobjectFieldsWithType" />
+    <aura:attribute type="boolean" name="isBack" default="false" />
+    <aura:attribute type="Object" name="scheduleObj" default="{}" />
+    <aura:attribute type="Map" name="eventInfo" default="{}" />
+    <aura:attribute type="map" name="globalDescribeMap" />
+    <aura:attribute type="boolean" name="isSMSPackageInstalled" default="false" />
+    <aura:attribute type="Boolean" name="allowSMS" default="false" />
+    <aura:attribute type="Map" name="smsData" default="{}" />
+    <aura:attribute type="Map" name="helpLinks" default="{}" />
+    <aura:attribute type="Integer" name="currentStep" default="0" />
+    <aura:attribute type="Integer" name="emailBalance" default="0" />
+    <aura:attribute type="SCH_Account" name="account" />
+    <aura:attribute type="List" name="scheduleDateTimeOptions" default="[]" />
+    <aura:attribute type="Boolean" name="isBTScheduleAdmin" default="false" />
+
+
+    <!--handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.scheduleObj.Base_Object}" action="{!c.handleBaseObjectChange}" />
+    <aura:handler name="change" value="{!v.scheduleObj.Related_Object}" action="{!c.handleRelatedObjectChange}" />
+
+    <!--markup-->
+
+    <aura:if isTrue="{!not(empty(v.spinner))}">
+        <lightning:spinner aura:id="spinner" alternativeText="Loading" size="large" class="slds-is-fixed" />
+    </aura:if>
+
+    <div>
+        <div class="slds-page-header slds-page-header_record-home">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <span
+                                class="{!'slds-icon_container slds-icon-standard-'+(v.scheduleObj.Action == 'Email'?'email':'sms')}">
+                                <lightning:icon
+                                    iconName="{!'standard:'+(v.scheduleObj.Action == 'Email'?'email':'sms')}"
+                                    size="xx_small" />
+                            </span>
+                        </div>
+                        <div class="slds-media__body slds-p-top_xx-small">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span class="slds-page-header__title custom-header_title">
+                                            Schedule <b>{!if(v.scheduleObj.Action == 'SMS', 'a SMS',
+                                                if(v.scheduleObj.Action == 'Email', 'an Email',' '))}</b>
+                                            <lightning:buttonMenu aura:id="menu" alternativeText="Show menu"
+                                                onselect="{! c.handleSelectScheduleType }" variant="bare">
+                                                <lightning:menuItem aura:id="menuItems" label="SMS" value="SMS"
+                                                    checked="{!v.scheduleObj.Action=='SMS'}"
+                                                    isDraft="{!v.account.featureScheduleSMS==false}"
+                                                    draftAlternativeText="{!v.account.featureScheduleSMS==false?
+                                                        v.account.actionDisableInfo
+                                                        +(v.isBTScheduleAdmin?(v.account.adminSuffix+v.account.linkLabel)
+                                                        :v.account.nonAdminSuffix):''}"/>
+                                                <lightning:menuItem aura:id="menuItems" label="Email" value="Email"
+                                                    checked="{!v.scheduleObj.Action=='Email'}"
+                                                    isDraft="{!v.account.featureScheduleEmail==false}"
+                                                    draftAlternativeText="{!v.account.featureScheduleEmail==false?
+                                                        v.account.actionDisableInfo
+                                                        +(v.isBTScheduleAdmin?(v.account.adminSuffix+v.account.linkLabel)
+                                                        :v.account.nonAdminSuffix):''}"/>
+                                            </lightning:buttonMenu>
+                                            <aura:if isTrue="{!and(v.allowSchedule, empty(v.recordId))}">
+                                                for&nbsp;<b>{!v.scheduleObj.Base_Object_Label}</b>
+                                                <c:SCH_BaseObjectOptions globalDescribeMap="{!v.globalDescribeMap}"
+                                                    selectedBaseObjectLabel="{!v.scheduleObj.Base_Object_Label}"
+                                                    selectedBaseObjectValue="{!v.scheduleObj.Base_Object}"
+                                                    currentStep="{!v.currentStep}" aura:id="baseObjectOptions" />
+                                            </aura:if>
+                                            <aura:if isTrue="{!!empty(v.scheduleObj.Base_Object)}">
+                                                to&nbsp;<b>{!v.scheduleObj.Related_Object_Label}</b>
+                                                <c:SCH_RelatedObjectOptions
+                                                    selectedBaseObjectValue="{!v.scheduleObj.Base_Object}"
+                                                    selectedRelatedObjectValue="{!v.scheduleObj.Related_Object}"
+                                                    selectedRelatedObjectLabel="{!v.scheduleObj.Related_Object_Label}"
+                                                    selectedRelatedObjectRelationshipName="{!v.scheduleObj.Related_Object_Relationship_Name}"
+                                                    selectedRelatedObjectFieldAPIName="{!v.scheduleObj.Related_Object_FieldAPIName}"
+                                                    recordId="{!v.recordId}" currentStep="{!v.currentStep}"
+                                                    aura:id="relatedObjectOptions" />
+                                            </aura:if>
+                                        </span>
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-page-header__col-actions">
+                    <div class="slds-page-header__controls"></div>
+                </div>
+            </div>
+        </div>
+        <div class="attendees slds-m-vertical_small">
+            <aura:if isTrue="{!!v.allowSMS &amp;&amp; v.scheduleObj.Action=='SMS' &amp;&amp; v.account.featureScheduleSMS == true}">
+                <lightning:layout multipleRows="true" class="slds-m-top_small">
+                    <lightning:layoutItem size="12" flexibility="auto">
+                        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                            <span class="slds-assistive-text">warning</span>
+                            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small"
+                                title="Description of icon when needed">
+                                <lightning:icon iconName="utility:warning" size="small" />
+                            </span>
+                            <h2>
+                                <aura:if isTrue="{!v.smsData.isInstalled}">
+                                    <!-- Package install validation -->
+                                    <aura:if isTrue="{!and(v.smsData.isSmsAdmin, v.isBTScheduleAdmin)}">
+                                        <!-- BT Messaging Admin validation error message -->
+                                        {!v.helpLinks.sms_not_configure_admin}
+                                        <aura:if isTrue="{!v.smsData.upgradeApp}">
+                                            <a href="{!v.helpLinks.sms_package_link}"
+                                                target="_blank" rel="noopener">{!v.helpLinks.upgradte_sms_admin_click_here_text}</a>
+                                            <aura:set attribute="else">
+                                                <a href="{!v.helpLinks.sms_admin_page_link}"
+                                                    target="_blank" rel="noopener">{!v.helpLinks.sms_not_configure_admin_click_here_text}</a>
+                                            </aura:set>
+                                        </aura:if>
+                                        <aura:set attribute="else">
+                                            <!-- BT Messaging Non-admin validation error message -->
+                                            {!v.helpLinks.sms_not_configure}
+                                        </aura:set>
+                                    </aura:if>
+                                    <aura:set attribute="else">
+                                        <!-- Package not install validation -->
+                                        <aura:if isTrue="{!and(v.smsData.allowInstall, v.isBTScheduleAdmin)}">
+                                            <!-- User can install BT Messaging -->
+                                            {!v.helpLinks.sms_not_installed_admin}<a
+                                                href="{!v.helpLinks.sms_package_link}"
+                                                target="_blank">{!v.helpLinks.sms_not_installed_admin_click_here_text}</a>
+                                            <aura:set attribute="else">
+                                                <!-- User cannot install BT Messaging -->
+                                                {!v.helpLinks.sms_not_installed}
+                                            </aura:set>
+                                        </aura:if>
+                                    </aura:set>
+                                </aura:if>
+                            </h2>
+                        </div>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </aura:if>
+            <aura:if
+                isTrue="{!v.scheduleObj.Base_Object != null 
+                        &amp;&amp; v.scheduleObj.Base_Object != undefined 
+                        &amp;&amp; v.scheduleObj.Base_Object != ''
+                        &amp;&amp; or(and (v.account.featureScheduleSMS, v.scheduleObj.Action=='SMS'),
+                        and (v.account.featureScheduleEmail, v.scheduleObj.Action=='Email'))
+                        &amp;&amp; (v.scheduleObj.Action=='Email'||(v.allowSMS &amp;&amp; v.scheduleObj.Action=='SMS'))}">
+                <c:SCH_MessageAttendees eventInfo="{!v.eventInfo}" account="{!v.account}"
+                    selectScheduleAttendees="{!(v.scheduleObj.Related_Object!=null&amp;&amp;v.scheduleObj.Related_Object!=undefined&amp;&amp;v.scheduleObj.Related_Object!=''?v.scheduleObj.Related_Object:v.scheduleObj.Base_Object)}"
+                    selectScheduleAttendeesLabel="{!(v.scheduleObj.Related_Object_Label!=null&amp;&amp;v.scheduleObj.Related_Object_Label!=undefined&amp;&amp;v.scheduleObj.Related_Object_Label!=''?v.scheduleObj.Related_Object_Label:v.scheduleObj.Base_Object_Label)}"
+                    selectScheduleType="{!v.scheduleObj.Action}"
+                    mapSobjectFieldsWithType="{!v.mapSobjectFieldsWithType}" scheduleObj="{!v.scheduleObj}"
+                    aura:id="messageAttendeescmp" relatedRecordId="{!v.scheduleObj.SObject_RecordId}"
+                    selectedAttendeeFilter="{!v.scheduleObj.selectedAttendeeFilter}"
+                    selectedAttendeeFilterValue="{!v.scheduleObj.selectedAttendeeFilterValue}"
+                    selectedAttendeeFilterCriteria="{!v.scheduleObj.Related_Object_Evaluate_Criteria}"
+                    smsBalance="{!v.smsData.smsBalance}" emailBalance="{!v.emailBalance}" currentStep="{!v.currentStep}"
+                    scheduleDateTimeOptions="{!v.scheduleDateTimeOptions}" allowSMS="{!v.allowSMS}"
+                    helpLinks="{!v.helpLinks}" />
+                <div class="slds-text-align_center slds-m-top_small">
+                    <button class="slds-button slds-button_neutral" onclick="{!c.handleHideSchedule}">Cancel</button>
+                    <button class="slds-button slds-button_neutral" onclick="{!c.handleSaveSchedule}"
+                        disabled="{!v.currentStep!=4}">Save as Draft</button>
+                    <button class="slds-button slds-button_brand" onclick="{!c.handleSaveActiveSchedule}"
+                        disabled="{!v.currentStep!=4}">Schedule</button>
+                </div>
+                <aura:set attribute="else">
+                    <aura:if isTrue="{!or(and(v.account.featureScheduleSMS==false, v.scheduleObj.Action=='SMS'), and(v.account.featureScheduleEmail==false, v.scheduleObj.Action=='Email'))}">
+                        <p class="slds-m-top_small slds-text-body_small">
+                            <div>
+                                <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                                    <span class="slds-assistive-text">warning</span>
+                                    <lightning:icon iconName="utility:warning" class="slds-m-right_x-small"
+                                        alternativeText="setup incomplete" title="" size="x-small" />
+                                    <h2 class="textey-d-initial">
+                                        {!v.account.actionDisableInfo}
+                                        <aura:if isTrue="{!v.isBTScheduleAdmin == true}">
+                                            {!v.account.adminSuffix}<a href="{!v.helpLinks.BT_Support_Team}"
+                                                target="_blank" rel="noopener">{!v.account.linkLabel}</a>.
+                                        </aura:if>
+                                        <aura:if isTrue="{!v.isBTScheduleAdmin == false}">
+                                            {!v.account.nonAdminSuffix}
+                                        </aura:if>
+                                    </h2>
+                                </div>
+                            </div>
+                        </p>
+                    </aura:if>
+                    <div class="slds-text-align_center slds-m-top_small">
+                        <button class="slds-button slds-button_neutral"
+                            onclick="{!c.handleHideSchedule}">Cancel</button>
+                    </div>
+                </aura:set>
+            </aura:if>
+        </div>
+    </div>
+    <aura:if isTrue="{!v.scheduleObj.isShowEmailVerified}">
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_small">
+            <div class="slds-modal__container">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick="{!c.handleCancelOrgWideEmailAddress}">
+                    <lightning:icon iconName="utility:close" size="medium" variant="inverse"/>
+                    <span class="slds-assistive-text">Cancel and close</span>
+                </button>
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                        {!if(v.scheduleObj.isScheduleActive, 'Schedule', 'Save as Draft')}
+                    </h1>
+                </div>
+                <div class="slds-modal__content" id="modal-content-id-1">
+                    <p class="slds-p-around_small slds-text-align_center">
+                        {!if(v.scheduleObj.isScheduleActive, v.helpLinks.email_not_accessible.schedule_info, v.helpLinks.email_not_accessible.save_as_draft_info)}
+                    </p>
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning:button label="Cancel" onclick="{!c.handleCancelOrgWideEmailAddress}" />
+                    <aura:if isTrue="{!not(v.scheduleObj.isScheduleActive)}">
+                        <lightning:button label="Confirm" variant="brand" onclick="{!c.handleConfirmOrgWideEmailAddress}" />
+                    </aura:if>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </aura:if>
+</aura:component>

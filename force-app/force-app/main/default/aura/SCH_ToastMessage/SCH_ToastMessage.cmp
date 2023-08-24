@@ -1,0 +1,33 @@
+<aura:component access="global">
+    <!-- attributes -->
+    <aura:attribute name="messageType" type="String" default='' />
+    <aura:attribute name="messageText" type="String" default='' />
+    <aura:attribute name="isRelative" type="Boolean" default="true" />
+
+    <!-- component markup -->
+    <div class="Textey-Message slds-is-fixed">
+        <aura:if isTrue="{!v.messageText != ''}">
+            <div class="{!'slds-notify_container ' + (v.isRelative ? ' slds-is-relative':'')}">
+                <div class="{!'slds-notify slds-notify_toast slds-theme_'+v.messageType}" role="alert">
+                    <span class="slds-assistive-text">{!v.messageType}</span>
+                    <span
+                        class="{!'slds-icon_container slds-m-right_small slds-no-flex slds-align-top slds-icon-utility-'+v.messageType}"
+                        title="{!v.messageText}">
+                        <lightning:icon iconName="{!'utility:'+v.messageType}" size="small"
+                            class="slds-icon-text-default" />
+                    </span>
+                    <div class="slds-notify__content">
+                        <h2 class="slds-text-heading_small toast-message">
+                            {!v.messageText}
+                        </h2>
+                    </div>
+                    <button class="slds-button slds-button_icon slds-notify__close slds-button_icon-inverse"
+                        title="Close">
+                        <lightning:buttonIcon iconName="utility:close" size="large" variant="bare-inverse" class=""
+                            onclick="{!c.doCloseUIMessage}" alternativeText="close" />
+                    </button>
+                </div>
+            </div>
+        </aura:if>
+    </div>
+</aura:component>

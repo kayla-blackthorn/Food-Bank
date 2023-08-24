@@ -1,0 +1,59 @@
+<aura:component extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="String" name="record_id" />
+    <aura:attribute type="boolean" name="isIncludeArchived" default="false" />
+    <aura:attribute type="boolean" name="showFilter" default="false" />
+    <aura:attribute type="List" name="selectedActionTypeOptions" default="['sms','email']" />
+    <aura:attribute type="List" name="actionTypeOptions"
+        default="[{'label':'SMS','value':'sms'},{'label':'Email','value':'email'}]" />
+    <aura:attribute type="List" name="selectedScheduleTypeOptions" default="['object']" />
+    <aura:attribute type="List" name="scheduleTypeOptions"
+        default="[{'label':'Object','value':'object'},{'label':'Record','value':'record'}]" />
+    <aura:attribute type="List" name="selectedStatusOptions" default="['draft', 'active']" />
+    <aura:attribute type="List" name="statusOptions"
+        default="[{'label':'Draft','value':'draft'},{'label':'Active','value':'active'},{'label':'Inactive','value':'inactive'},{'label':'Completed','value':'completed'}]" />
+    <aura:attribute type="Object" name="onApply" />
+
+    <!--markup-->
+    <div class="filterSection">
+        <lightning:card title="Filters">
+            <aura:set attribute="footer">
+                <lightning:layout multipleRows="true">
+                    <lightning:layoutItem size="12" class="slds-text-align_right filter-panel-button">
+                        <lightning:button label="Cancel" title="Cancel" onclick="{!c.handleFilterClick}" />
+                        <lightning:button variant="brand" label="Apply" title="Apply" class="slds-m-left_x-small"
+                            onclick="{!c.handleApplyFilter}" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </aura:set>
+            <p>
+                <lightning:layout multipleRows="true">
+                    <lightning:layoutItem size="12" padding="horizontal-small">
+                        <c:SCH_multiselect options="{!v.actionTypeOptions}" label="Action Type"
+                            noInfoText="Action type not found!" selectedItems="{!v.selectedActionTypeOptions}"
+                            selectAll="false" inpId="actionType"></c:SCH_multiselect>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="12" padding="horizontal-small">
+                        <c:SCH_multiselect options="{!v.scheduleTypeOptions}" noInfoText="Schedule type not found!"
+                            label="Schedule Type" selectedItems="{!v.selectedScheduleTypeOptions}" selectAll="false"
+                            inpId="scheduleType"></c:SCH_multiselect>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="12" padding="horizontal-small">
+                        <c:SCH_multiselect options="{!v.statusOptions}" label="Status" noInfoText="Status not found!"
+                            selectedItems="{!v.selectedStatusOptions}" selectAll="false" inpId="status">
+                        </c:SCH_multiselect>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="12" padding="around-small">
+                        <div dir="rtl" class="slds-float_left">
+                            <lightning:input type="toggle" label=" Include Archived" name="include_archived"
+                                messageToggleActive="" messageToggleInactive="" class="toogle-archived_menu"
+                                checked="{!v.isIncludeArchived}" />
+                        </div>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </p>
+        </lightning:card>
+    </div>
+</aura:component>

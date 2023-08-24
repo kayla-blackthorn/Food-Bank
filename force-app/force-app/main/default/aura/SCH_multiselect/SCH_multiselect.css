@@ -1,0 +1,113 @@
+.THIS .slds-listbox,
+.THIS .slds-dropdown {
+    z-index: 88;
+}
+
+.THIS .slds-listbox__item .slds-listbox__item__only-toggle {
+    color: #4285f4;
+    display: none;
+    padding: 1px 0px 0px 0px;
+    text-transform: uppercase;
+}
+
+.THIS .slds-listbox__item:hover .slds-listbox__item__only-toggle {
+    display: block;
+    font-size: 10px;
+    margin-right: 5px;
+    margin-top: 3px;
+}
+
+.THIS .slds-listbox__item .slds-listbox__item__action,
+.THIS .slds-listbox [tabindex="0"]:hover {
+    cursor: pointer;
+}
+
+.THIS .slds-media_small.slds-listbox__option {
+    cursor: default;
+}
+
+.THIS .select-chk_option,
+.THIS .select-chk_option:hover {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+
+.THIS .slds-media .slds-media__figure {
+    margin: 0;
+}
+
+.THIS .slds-media lightning-input.select-chk {
+    width: 0;
+}
+
+.THIS .slds-media lightning-input.select-chk span.slds-form-element__label,
+.THIS div.inline div {
+    display: none;
+}
+
+.THIS .slds-media lightning-input.select-chk span.slds-checkbox_faux {
+    margin-left: 14px;
+    margin-top: 8px;
+}
+
+.THIS .slds-f-w_bold {
+    font-weight: bold;
+    color: black;
+}
+
+.THIS .slds-listbox__item,
+.THIS .slds-no-flex.action {
+    cursor: pointer;
+}
+
+.THIS li.slds-listbox__item.multi-off:hover,
+.THIS li.slds-listbox__item.selected {
+    background-color: rgb(243, 242, 242);
+}
+
+.THIS p.slds-page-header__name-meta {
+    font-size: inherit;
+}
+
+.THIS .slds-single-selection {
+    width: calc(100%);
+}
+
+.THIS .slds-single-selection button {
+    right: 1.5rem;
+}
+
+.THIS div.inline {
+    display: inline;
+    padding: 0px 0.5rem;
+}
+
+.THIS .num-align {
+    padding-top: 6px;
+}
+
+.THIS .is-combobox input[readonly] {
+    color: black
+}
+
+.THIS .slds-dropdown_length-4,
+.THIS .slds-dropdown--length-4 {
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(((1rem * 1.25) + 1rem) * 4);
+    overflow-y: auto;
+}
+
+.THIS .slds-dropdown_length-3,
+.THIS .slds-dropdown--length-3 {
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(((1rem * 1.25) + 1rem) * 3);
+    overflow-y: auto;
+}
+
+.THIS .slds-dropdown_length-2,
+.THIS .slds-dropdown--length-2 {
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(((1rem * 1.25) + 1rem) * 2);
+    overflow-y: auto;
+}

@@ -1,0 +1,64 @@
+<aura:component controller="SCH_SmartSchedulerController" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="map" name="globalDescribeMap" />
+    <aura:attribute type="List" name="relatedObjectOptions" />
+    <aura:attribute type="String" name="selectedBaseObjectValue" />
+    <aura:attribute type="String" name="selectedRelatedObjectValue" />
+    <aura:attribute type="String" name="selectedRelatedObjectLabel" />
+    <aura:attribute type="String" name="selectedRelatedObjectRelationshipName" />
+    <aura:attribute type="String" name="selectedRelatedObjectFieldAPIName" />
+    <aura:attribute type="String" name="recordId" />
+    <aura:attribute type="Integer" name="currentStep" default="0" />
+
+    <aura:attribute type="List" name="selectedRelatecObjects" default="[]" />
+    <aura:attribute type="List" name="selectedItems" default="[]" />
+    <aura:attribute type="Boolean" name="allowSelect" default="false" />
+    <aura:attribute type="Boolean" name="displayDropdownSelection" default="false" />
+    <aura:attribute type="Boolean" name="eventRecordConfig" default="false" />
+
+    <!--handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.selectedBaseObjectValue}" action="{!c.doInit}" />
+
+    <!--method-->
+    <aura:method name="relatedObjectvalueUpdate" action="{!c.handleRelatedObjectvalueUpdate}"
+        description="Allows to set Related Object">
+        <aura:attribute name="relatedObjectvalue" type="String" required="true" />
+    </aura:method>
+
+    <aura:method name="resetRelatedObjectValueUpdate" action="{!c.handleResetRelatedObject}"
+        description="Allows to Reset Related Object">
+    </aura:method>
+
+    <!--  -->
+    <aura:if isTrue="{!v.eventRecordConfig}">
+        <!-- Event record details page level related object selection with dropdown -->
+        <lightning:buttonMenu onselect="{! c.handleObjectSelection }" variant="bare">
+            <aura:iteration items="{!v.relatedObjectOptions}" var="opt">
+                <lightning:menuItem label="{!opt.label}" value="{!opt.value}"
+                    checked="{!v.selectedRelatedObjectValue==opt.value}" />
+            </aura:iteration>
+        </lightning:buttonMenu>
+        <aura:set attribute="else">
+            <!-- global level related object selection with type ahead -->
+            <div>
+                <span class="action">
+                    <lightning:buttonIcon iconName="utility:down" size="s-xmall" variant="bare"
+                        onclick="{!c.handleAllowSelect}" />
+                </span>
+            </div>
+            <div class="{!'action-dropdown ' + (v.allowSelect ? '' : 'slds-hide')}">
+                <aura:if isTrue="{!v.displayDropdownSelection}">
+                    <c:SCH_multiselect aura:id="relatedObjectSelection" options="{!v.relatedObjectOptions}"
+                        variant="label-hidden" selectAll="false" singleSelect="true" isMultiSelect="false"
+                        masterSelect="false" selectedOptions="{!v.selectedRelatecObjects}"
+                        inpId="relatedObjectSelection" placeholder="Choose Related Object..."
+                        noInfoText="Object not found" selectedItems="{!v.selectedItems}"
+                        onchange="{!c.handleChangeRelatedObject}" />
+                </aura:if>
+            </div>
+        </aura:set>
+    </aura:if>
+</aura:component>

@@ -1,0 +1,22 @@
+.THIS .slds-accordion__section.slds-is-open>div.slds-accordion__summary {
+    border-bottom-width: var(--slds-c-accordion-sizing-border, var(--sds-c-accordion-sizing-border, var(--lwc-borderWidthThin, 1px)));
+    border-bottom-style: solid;
+    border-bottom-color: var(--slds-c-accordion-color-border, var(--sds-c-accordion-color-border, var(--lwc-colorBorder, rgb(229, 229, 229))));
+}
+
+.THIS .slds-no-padding {
+    padding: 0;
+}
+
+.THIS .filter-panel .display-inline {
+    display: inline-block !important;
+}
+
+.THIS .fs-16 {
+    font-size: 16px !important;
+}
+
+.THIS .custom-filter_style {
+    top: -3px;
+    position: relative;
+}

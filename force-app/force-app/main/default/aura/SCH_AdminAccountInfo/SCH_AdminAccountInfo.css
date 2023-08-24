@@ -1,0 +1,111 @@
+.THIS .Textey-Message {
+    z-index: 9999;
+}
+
+.THIS .slds-progress__item.slds-is-completed .slds-progress__marker_icon svg {
+    fill: green !important;
+}
+
+.THIS .slds-progress_vertical .slds-progress__item:before,
+.THIS .slds-progress_vertical .slds-progress__item:after {
+    width: 3px;
+    left: calc((1.5rem / 2) - 2px);
+}
+
+.THIS .slds-progress_vertical .slds-progress__item.slds-is-completed:before,
+.THIS .slds-progress_vertical .slds-progress__item.slds-is-completed:after,
+.THIS .slds-progress_vertical .slds-progress__item.slds-is-active:before,
+.THIS .slds-progress_vertical .slds-progress__item.slds-has-error:before {
+    background-color: green !important;
+}
+
+.THIS .slds-progress__item.slds-is-completed .slds-progress__marker {
+    border-width: 0;
+}
+
+.THIS .slds-progress__item .slds-progress__marker {
+    position: absolute;
+    top: 25%;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: 5px;
+    border-color: white !important;
+    box-shadow: rgb(211 211 211 / 50%) 0px 0px 2px 2px !important;
+}
+
+.THIS .slds-progress__item.slds-is-active .slds-progress__marker {
+    background: rgb(1 70 127);
+}
+
+.THIS .slds-progress__item .slds-progress__item_content {
+    margin-left: 2.5rem;
+}
+
+.THIS .section-status {
+    color: black;
+    font-weight: bold;
+    font-size: 0.75rem;
+}
+
+.THIS .section-title {
+    color: rgb(0 0 0 / 70%);
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.THIS .section-detail {
+    color: rgb(107, 109, 112);
+}
+
+.THIS .slds-progress__item.slds-is-completed .section-status {
+    color: green;
+}
+
+.THIS .slds-progress__item.slds-is-active .section-status {
+    color: rgb(1 70 127);
+}
+
+.THIS .slds-progress__item .action {
+    cursor: pointer;
+}
+
+.THIS .lock-unlock,
+.THIS .lock-unlock-key {
+    display: inline;
+}
+
+.THIS .slds-form-element__row {
+    align-items: baseline;
+}
+
+.THIS .slds-card {
+    border: 1px solid rgb(221, 219, 218) !important;
+}
+
+@media only screen and (min-width: 1025px) {
+    .THIS .slds-x-large-size_2-of-12 {
+        width: 16.66666667%
+    }
+
+    .THIS .slds-x-large-size_4-of-12 {
+        width: 33.33333333%
+    }
+
+    .THIS .slds-x-large-size_6-of-12 {
+        width: 50%
+    }
+}
+
+@media only screen and (min-width: 1281px) {
+    .THIS .slds-xx-large-size_2-of-12 {
+        width: 16.66666667%
+    }
+
+    .THIS .slds-xx-large-size_4-of-12 {
+        width: 33.33333333%
+    }
+
+    .THIS .slds-xx-large-size_6-of-12 {
+        width: 50%
+    }
+}

@@ -1,0 +1,49 @@
+<aura:component controller="SCH_SmartSchedulerController" extends="c:SCH_Utility">
+    <!--attribute-->
+    <aura:attribute type="Integer" name="actionCnt" default="0" />
+    <aura:attribute type="String" name="spinner" default="" />
+    <aura:attribute type="String" name="title" default="" />
+    <aura:attribute type="List" name="message_body" default="[]" />
+    <aura:attribute type="String" name="btn_name" default="" />
+    <aura:attribute type="String" name="action_name" default="" />
+    <aura:attribute type="String" name="salesforce_id" default="" />
+    <aura:attribute type="String" name="status" default="" />
+    <aura:attribute type="Boolean" name="isShowConfirmModal" default="false" />
+    <aura:attribute type="Boolean" name="isBack" default="false" />
+
+    <!--markup-->
+    <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+        class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                onclick="{!c.handleCloseConfirmModal}">
+                <lightning:icon iconName="utility:close" variant="inverse" size="small" />
+                <span class="slds-assistive-text">Cancel and close</span>
+            </button>
+            <div class="slds-modal__header">
+                <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!v.title}</h1>
+            </div>
+            <div class="slds-modal__content slds-p-top_medium slds-p-bottom_medium custom-modal_body"
+                id="modal-content-id-1">
+                <aura:if isTrue="{!v.actionCnt > 0}">
+                    <lightning:spinner variant="brand" size="medium" class="spinnerClass" />
+                </aura:if>
+                <p class="slds-text-align_center">
+                    <aura:iteration items="{!v.message_body}" var="content">
+                        <aura:if isTrue="{!content.isBlod}">
+                            <b>{!content.text}</b>
+                            <aura:set attribute="else">
+                                {!content.text}
+                            </aura:set>
+                        </aura:if>
+                    </aura:iteration>
+                </p>
+            </div>
+            <div class="slds-modal__footer">
+                <button class="slds-button slds-button_neutral" onclick="{!c.handleCloseConfirmModal}">Cancel</button>
+                <button class="slds-button slds-button_brand" onclick="{!c.handleConfirm}">{!v.btn_name}</button>
+            </div>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+</aura:component>

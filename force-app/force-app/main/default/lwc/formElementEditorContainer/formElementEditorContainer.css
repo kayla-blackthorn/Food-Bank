@@ -1,0 +1,7 @@
+:host {
+    position: relative; /* This is required for the spinner */
+}
+
+.loading-placeholder {
+    min-height: 20rem;
+}

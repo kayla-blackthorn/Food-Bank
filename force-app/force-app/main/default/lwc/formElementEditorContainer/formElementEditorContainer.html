@@ -1,0 +1,34 @@
+<template>
+    <lightning-modal-header label={modalTitle}></lightning-modal-header>
+    <lightning-modal-body>
+        <template if:true={labels}>
+            <c-form-element-editor
+                labels={labels}
+                form-id={formId}
+                element={element}
+                conditions={conditions}
+                question-types={questionTypes}
+                available-elements={availableElements}
+                maps-to-object-options={mapsToObjectOptions}
+                maps-to-field-options={mapsToFieldOptions}
+                big-list-group-options={bigListGroupOptions}
+                ontypechange={handleQuestionTypeChange}
+                onmapstoobjectchange={handleMapsToObjectChange}
+            ></c-form-element-editor>
+        </template>
+        <template if:false={labels}>
+            <div class="loading-placeholder">
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </div>
+        </template>
+        <template if:true={saving}>
+            <div class="loading-placeholder">
+                <lightning-spinner alternative-text="Saving" size="small"></lightning-spinner>
+            </div>
+        </template>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_small" disabled={saving}></lightning-button>
+        <lightning-button variant="brand" label={saveButtonLabel} onclick={handleSave} disabled={saving}></lightning-button>
+    </lightning-modal-footer>
+</template>

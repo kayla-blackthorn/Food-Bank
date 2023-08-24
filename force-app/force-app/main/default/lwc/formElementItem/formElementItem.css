@@ -1,0 +1,83 @@
+.level-2 {
+    padding-left: 24px;
+}
+
+.level-3 {
+    padding-left: 48px;
+}
+
+.level-4 {
+    padding-left: 72px;
+}
+
+.level-5 {
+    padding-left: 96px;
+}
+
+.level-6 {
+    padding-left: 120px;
+}
+
+.level-7 {
+    padding-left: 144px;
+}
+
+.level-8 {
+    padding-left: 168px;
+}
+
+.level-9 {
+    padding-left: 192px;
+}
+
+.level-10 {
+    padding-left: 216px;
+}
+
+.level-11 {
+    padding-left: 240px;
+}
+
+.drag-container {
+    position: relative;
+}
+
+.drag-container.dragging {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.drag-container.dragging .drag-button {
+    pointer-events: auto;
+}
+
+.content {
+    transition: opacity 0.25s ease-out;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.content.is-virtual {
+    border-style: dashed;
+    opacity: 0.7;
+}
+
+.drag-container.dragging .content {
+    opacity: 0.7;
+}
+
+.placeholder {
+    opacity: 0;
+}
+
+.notify {
+    position: absolute;
+    right: 0;
+    width: 100%;
+    min-width: 12.5rem;
+    bottom: 100%;
+    border-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+    overflow: hidden;
+}

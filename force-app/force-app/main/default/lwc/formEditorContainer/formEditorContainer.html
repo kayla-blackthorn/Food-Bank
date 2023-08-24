@@ -1,0 +1,27 @@
+<template>
+    <div class="container slds-is-relative">
+        <template if:true={formLoaded}>
+            <c-form-editor
+                form={form}
+                elements-and-conditions={elementsAndConditions}
+                saving={saving}
+                oneditform={handleEditForm}
+                onsave={handleSaveForm}
+            ></c-form-editor>
+        </template>
+        <template if:true={loading}>
+            <div class="placeholder">
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </div>
+        </template>
+        <template if:true={hasError}>
+            <div class="placeholder slds-align_absolute-center">
+                <lightning-icon class="slds-m-right_x-small" icon-name="utility:warning" size="xx-small" alternative-text="Warning" title="Warning"></lightning-icon>
+                <span class="error-message">{errorMessage}</span>
+                <div class="slds-m-left_x-small">
+                    <lightning-button-icon onclick={handleReloadForm} icon-name="utility:refresh"  variant="container" alternative-text="Reload form" size="medium" title="Reload form"></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

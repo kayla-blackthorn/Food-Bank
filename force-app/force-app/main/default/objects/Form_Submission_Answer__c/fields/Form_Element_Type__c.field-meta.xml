@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Form_Element_Type__c</fullName>
+    <description>The type of question that was asked as part of this Form Submission Answer.</description>
+    <externalId>false</externalId>
+    <formula>TEXT(Form_Element__r.Type__c)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>The type of question that was asked as part of this Form Submission Answer.</inlineHelpText>
+    <label>Form Element Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

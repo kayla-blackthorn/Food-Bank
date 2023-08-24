@@ -1,0 +1,65 @@
+<template>
+    <lightning-layout pull-to-boundary="small">
+        <lightning-layout-item size="4" padding="horizontal-small">
+            <c-combobox-autocomplete
+                required
+                name="elementId"
+                label="If the Answer of Question"
+                value={condition.elementId}
+                placeholder="Select a Question"
+                options={availableElementOptions}
+                onchange={setElementId}
+            >
+            </c-combobox-autocomplete>
+        </lightning-layout-item>
+
+        <lightning-layout-item size="3" padding="horizontal-small">
+            <lightning-combobox
+                name="operator"
+                label="Operator"
+                value={condition.conditionOperator}
+                placeholder="Select an Operator"
+                options={operatorOptions}
+                onchange={setOperator}
+            >
+            </lightning-combobox>
+        </lightning-layout-item>
+
+        <lightning-layout-item size="5" padding="horizontal-small">
+            <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-spread">
+                <template if:true={valueTypes.text}>
+                    <lightning-input
+                        class="slds-grow"
+                        name="value"
+                        type="text"
+                        label="Value"
+                        placeholder="Fill in a value"
+                        value={conditionValue}
+                        onchange={setValue}
+                    ></lightning-input>
+                </template>
+                <template if:true={valueTypes.checkbox}>
+                    <lightning-combobox
+                        class="slds-grow"
+                        name="value"
+                        label="Value"
+                        value={conditionValue}
+                        placeholder="Select a value"
+                        options={checkboxOptions}
+                        onchange={setValue}
+                    >
+                    </lightning-combobox>
+                </template>
+                <lightning-button-icon
+                    class="slds-m-left_x-small slds-m-bottom_xx-small"
+                    icon-name="utility:delete"
+                    variant="bare"
+                    alternative-text="Delete"
+                    title="Delete"
+                    size="large"
+                    onclick={deleteCondition}
+                ></lightning-button-icon>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

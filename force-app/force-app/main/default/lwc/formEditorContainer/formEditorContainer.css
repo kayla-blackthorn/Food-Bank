@@ -1,0 +1,9 @@
+.container {
+    background-color: var(--lwc-colorBackground, #f3f3f3);
+    border-radius:  var(--lwc-borderRadiusMedium, 0.25rem);
+    overflow: hidden;
+}
+
+.placeholder {
+    min-height: 20rem;
+}
