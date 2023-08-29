@@ -7,10 +7,11 @@ on:
 
 env:
     CUMULUSCI_KEYCHAIN_CLASS: cumulusci.core.keychain.EnvironmentProjectKeychain
-    CUMULUSCI_SERVICE_github: ${{ secrets.CUMULUSCI_SERVICE_github }}
-    CUMULUSCI_ORG_packaging: '{"username": "kaylamp04@creative-hawk-tskjq1.com", "instance_url": "https://login.salesforce.com"}'
+    CUMULUSCI_SERVICE_GITHUB: ${{ secrets.CUMULUSCI_SERVICE_github }}
+    SFDX_AUTH_URL: ${{ secrets.PACKAGE_ORG_AUTH_URL}}
     SFDX_CLIENT_ID: ${{ secrets.SFDX_CLIENT_ID }}
     SFDX_HUB_KEY: ${{ secrets.SFDX_HUB_KEY }}
+    CUMULUSCI_ORG_packaging: '{"username": "kaylamp04@creative-hawk-tskjq1.com", "instance_url": "https://login.salesforce.com"}'
 
 jobs:
   build:
@@ -38,17 +39,17 @@ jobs:
       #   run: |
       #     cci task run dx_convert_from
 
-      - name: Connect Package Org
-        id: connect-org
-        run: |
-          cci org connect packageorg > task_logs.txt 2>&1
-        continue-on-error: true # Continue even if the step fails
+      # - name: Connect Package Org
+      #   id: connect-org
+      #   run: |
+      #     cci org connect packageorg > task_logs.txt 2>&1
+      #   continue-on-error: true # Continue even if the step fails
 
-      - name: Print Error Logs if Step Failed
-        if: steps.connect-org.outcome == 'failure' # Check if the previous step failed
-        run: |
-          echo "Step failed. Printing error logs:"
-          cat task_logs.txt
+      # - name: Print Error Logs if Step Failed
+      #   if: steps.connect-org.outcome == 'failure' # Check if the previous step failed
+      #   run: |
+      #     echo "Step failed. Printing error logs:"
+      #     cat task_logs.txt
 
       - name: Deploy to Package Org
         run: |
