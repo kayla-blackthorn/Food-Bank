@@ -41,7 +41,7 @@ jobs:
 
       - name: Deploy to Package Org
         run: |
-          echo "SFDX_AUTH_URL: $SFDX_AUTH_URL
+          echo "SFDX_AUTH_URL: $SFDX_AUTH_URL"
           cci task run deploy --org packaging
 
       - name: Determine Release Type
