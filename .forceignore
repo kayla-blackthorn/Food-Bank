@@ -10,3 +10,6 @@ force-app/main/default/profiles
 
 # LWC Jest
 **/__tests__/**
+
+# Exclude the problematic metadata file
+force-app/main/default/customindex/Form_Submission__c.Key__c.indx-meta.xml
