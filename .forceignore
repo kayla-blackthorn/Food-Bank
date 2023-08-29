@@ -13,3 +13,4 @@ force-app/main/default/profiles
 
 # Exclude the problematic metadata file
 force-app/main/default/customindex/Form_Submission__c.Key__c.indx-meta.xml
+force-app/main/default/customindex/Form__c.Encrypted_ID__c.indx-meta.xml
