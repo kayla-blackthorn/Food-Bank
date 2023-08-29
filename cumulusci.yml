@@ -8,9 +8,6 @@ project:
         default_branch: 'main'
     source_format: sfdx
 
-orgs:
-  packageorg:
-
 tasks:
     robot:
         options:
