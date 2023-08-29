@@ -8,7 +8,7 @@ on:
 env:
     CUMULUSCI_KEYCHAIN_CLASS: cumulusci.core.keychain.EnvironmentProjectKeychain
     CUMULUSCI_SERVICE_GITHUB: ${{ secrets.CUMULUSCI_SERVICE_github }}
-    SFDX_AUTH_URL: ${{ secrets.PACKAGE_ORG_AUTH_URL}}
+    SFDX_AUTH_URL: ${{ secrets.PACKAGING_ORG_AUTH_URL}}
     SFDX_CLIENT_ID: ${{ secrets.SFDX_CLIENT_ID }}
     SFDX_HUB_KEY: ${{ secrets.SFDX_HUB_KEY }}
     CUMULUSCI_ORG_packaging: '{"username": "kaylamp04@creative-hawk-tskjq1.com", "instance_url": "https://login.salesforce.com"}'
@@ -53,7 +53,7 @@ jobs:
 
       - name: Deploy to Package Org
         run: |
-          cci task run deploy --org packageorg
+          cci task run deploy --org packaging
 
       - name: Determine Release Type
         id: release-type
@@ -68,9 +68,9 @@ jobs:
       - name: Create Beta Release
         if: steps.release-type.outputs.release-type == 'beta'
         run: |
-          cci task run upload_beta --org packageorg
+          cci task run upload_beta --org packaging
 
       - name: Create Major Release
         if: steps.release-type.outputs.release-type == 'major'
         run: |
-          cci task run upload_production --org packageorg
+          cci task run upload_production --org packaging
