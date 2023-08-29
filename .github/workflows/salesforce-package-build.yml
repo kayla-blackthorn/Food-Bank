@@ -9,8 +9,8 @@ env:
     CUMULUSCI_KEYCHAIN_CLASS: cumulusci.core.keychain.EnvironmentProjectKeychain
     CUMULUSCI_SERVICE_github: ${{ secrets.CUMULUSCI_SERVICE_GITHUB }}
     SFDX_AUTH_URL: ${{ secrets.PACKAGING_ORG_AUTH_URL}}
-    # SFDX_CLIENT_ID: ${{ secrets.SFDX_CLIENT_ID }}
-    # SFDX_HUB_KEY: ${{ secrets.SFDX_HUB_KEY }}
+    SFDX_CLIENT_ID: ${{ secrets.SFDX_CLIENT_ID }}
+    SFDX_HUB_KEY: ${{ secrets.SFDX_HUB_KEY }}
     CUMULUSCI_ORG_packaging: '{"username": "kaylamp04@creative-hawk-tskjq1.com", "instance_url": "https://login.salesforce.com"}'
 
 jobs:
