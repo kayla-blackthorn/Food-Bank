@@ -1,5 +1,5 @@
 name: Salesforce Package Build
-
+# test push
 on:
   push:
     branches:
@@ -38,12 +38,6 @@ jobs:
       - name: Convert to Metadata API Format
         run: |
           cci task run dx_convert_from
-
-      # - name: Connect Package Org
-      #   id: connect-org
-      #   run: |
-      #     cci org connect packageorg > task_logs.txt 2>&1
-      #   continue-on-error: true # Continue even if the step fails
 
       - name: Deploy to Package Org
         run: |
