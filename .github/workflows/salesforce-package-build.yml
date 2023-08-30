@@ -47,9 +47,7 @@ jobs:
       - name: Determine Release Type
         id: release-type
         run: |
-          commit_message="${{ github.event.head_commit.message }}"
-          echo "Commit Message: $commit_message"
-          if [[ "$commit_message" =~ "beta" ]]; then
+          if [[ "${{ github.event.head_commit.message }}" =~ "beta" ]]; then
             echo "beta"
           else
             echo "major"
