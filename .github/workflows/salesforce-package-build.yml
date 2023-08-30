@@ -48,10 +48,10 @@ jobs:
         id: release-type
         run: |
           if [[ "${{ github.event.head_commit.message }}" =~ "beta" ]]; then
-            echo "beta"
+            echo "::set-output name=release-type::beta"
             echo "Release Type Value: ${{ steps.release-type.outputs.release-type }}"
           else
-            echo "major"
+            echo ""::set-output name=release-type::major"
             echo "Release Type Value: ${{ steps.release-type.outputs.release-type }}"
           fi
         continue-on-error: true
