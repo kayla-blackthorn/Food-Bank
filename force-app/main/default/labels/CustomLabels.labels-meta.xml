@@ -387,12 +387,4 @@
         <shortDescription>fflib_security_error_object_not_updateable</shortDescription>
         <value>You do not have permission to update {0}</value>
     </labels>
-    <labels>
-        <fullName>Form_Builder_Max_Limit</fullName>
-        <categories>Forms</categories>
-        <language>en_US</language>
-        <protected>true</protected>
-        <shortDescription>Max limit of records for form builder</shortDescription>
-        <value>Can handle 10000 records at most per call.</value>
-    </labels>
 </CustomLabels>
