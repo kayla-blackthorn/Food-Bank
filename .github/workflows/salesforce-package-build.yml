@@ -55,11 +55,11 @@ jobs:
         continue-on-error: true
 
       - name: Create Beta Release
-        if: steps.release-type.outputs.release-type == 'beta'
+        if: steps.release-type.outputs.release-type contains 'beta'
         run: |
           cci task run upload_beta --org packaging
 
       - name: Create Major Release
-        if: steps.release-type.outputs.release-type == 'major'
+        if: steps.release-type.outputs.release-type contains 'major'
         run: |
           cci task run upload_production --org packaging
