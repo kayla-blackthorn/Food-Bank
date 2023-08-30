@@ -7,10 +7,15 @@ on:
 
 env:
     CUMULUSCI_KEYCHAIN_CLASS: cumulusci.core.keychain.EnvironmentProjectKeychain
+    # {"username": "github_username", "token":"github_personal_access_token","email":"email_address"}
     CUMULUSCI_SERVICE_github: ${{ secrets.CUMULUSCI_SERVICE_GITHUB }}
+    # sfdx force:org:display --json --verbose -u packaging_org_username
     SFDX_AUTH_URL: ${{ secrets.PACKAGING_ORG_AUTH_URL}}
+    # client id from connected app
     SFDX_CLIENT_ID: ${{ secrets.SFDX_CLIENT_ID }}
+    # server.key file, needs to be attached to the connected app
     SFDX_HUB_KEY: ${{ secrets.SFDX_HUB_KEY }}
+    # username and url for the packaging org
     CUMULUSCI_ORG_packaging: '{"username": "kaylamp04@creative-hawk-tskjq1.com", "instance_url": "https://creative-hawk-tskjq1-dev-ed.trailblaze.my.salesforce.com"}'
 
 jobs:
