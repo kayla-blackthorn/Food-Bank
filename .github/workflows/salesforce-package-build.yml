@@ -52,8 +52,11 @@ jobs:
           else
             echo "major"
           fi
-         echo steps.release-type.outputs.release-type
         continue-on-error: true
+
+      - name: Print Release Type Value
+        run: |
+          echo "Release Type Value: ${{ steps.release-type.outputs.release-type }}"
 
       - name: Create Beta Release
         if: steps.release-type.outputs.release-type == 'beta'
