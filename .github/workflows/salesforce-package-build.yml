@@ -51,7 +51,7 @@ jobs:
             echo "::set-output name=release-type::beta"
             echo "Release Type Value: ${{ steps.release-type.outputs.release-type }}"
           else
-            echo ""::set-output name=release-type::major"
+            echo "::set-output name=release-type::major"
             echo "Release Type Value: ${{ steps.release-type.outputs.release-type }}"
           fi
         continue-on-error: true
