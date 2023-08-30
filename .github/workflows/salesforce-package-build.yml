@@ -52,14 +52,15 @@ jobs:
           else
             echo "major"
           fi
+         echo steps.release-type.outputs.release-type
         continue-on-error: true
 
       - name: Create Beta Release
-        if: steps.release-type.outputs.release-type =~ 'beta'
+        if: steps.release-type.outputs.release-type == 'beta'
         run: |
           cci task run upload_beta --org packaging
 
       - name: Create Major Release
-        if: steps.release-type.outputs.release-type =~ 'major'
+        if: steps.release-type.outputs.release-type == 'major'
         run: |
           cci task run upload_production --org packaging
