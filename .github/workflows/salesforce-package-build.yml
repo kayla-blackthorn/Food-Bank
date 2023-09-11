@@ -3,7 +3,7 @@ name: Salesforce Package Build
 on:
   push:
     branches:
-      - main
+      - 'release/*'
 
 env:
     CUMULUSCI_KEYCHAIN_CLASS: cumulusci.core.keychain.EnvironmentProjectKeychain
