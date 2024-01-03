@@ -2,7 +2,7 @@ minimum_cumulusci_version: '3.77.0'
 project:
     name: Food-Bank
     package:
-        name: n
+        name: Food-Bank
         api_version: '57.0'
     git:
         default_branch: 'main'
