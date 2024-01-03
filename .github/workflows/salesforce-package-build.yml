@@ -1,17 +1,15 @@
 name: Salesforce Package Build
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch: {} # Enable manual triggering
 
 env:
     CUMULUSCI_KEYCHAIN_CLASS: cumulusci.core.keychain.EnvironmentProjectKeychain
     CUMULUSCI_SERVICE_github: ${{ secrets.CUMULUSCI_SERVICE_GITHUB }}
-    SFDX_AUTH_URL: ${{ secrets.PACKAGING_ORG_AUTH_URL}}
+    SFDX_AUTH_URL: ${{ secrets.PACKAGING_ORG_AUTH_URL }}
     SFDX_CLIENT_ID: ${{ secrets.SFDX_CLIENT_ID }}
     SFDX_HUB_KEY: ${{ secrets.SFDX_HUB_KEY }}
-    CUMULUSCI_ORG_packaging: '{"username": "kaylamp04@creative-hawk-tskjq1.com", "instance_url": "https://creative-hawk-tskjq1-dev-ed.trailblaze.my.salesforce.com"}'
+    CUMULUSCI_ORG_packaging: ${{ secrets.CUMULUSCI_ORG_PACKAGING }}
 
 jobs:
   build:
@@ -28,12 +26,13 @@ jobs:
 
       - name: Install CumulusCI
         run: pip install cumulusci
-
+      
       - name: Install sfdx
         run: |
           mkdir sfdx
-          wget -qO- https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz | tar xJ -C sfdx --strip-components 1
-          ./sfdx/install
+          wget -qO- https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz | tar xJ -C sfdx --strip-components 1
+          export PATH="$(pwd)/sfdx/bin"
+          echo "$(pwd)/sfdx/bin" >> $GITHUB_PATH
 
       - name: Convert to Metadata API Format
         run: |
@@ -41,31 +40,24 @@ jobs:
 
       - name: Deploy to Package Org
         run: |
-          echo "SFDX_AUTH_URL: $SFDX_AUTH_URL"
-          cci task run deploy --org packaging
+          cci task run deploy --org packaging --unmanaged false
 
       - name: Determine Release Type
         id: release-type
         run: |
-          if [[ "${{ github.event.head_commit.message }}" =~ "beta" ]]; then
+          if [[ "${{ vars.BETA_RELEASE }}" == "true" ]]; then
             echo "::set-output name=release-type::beta"
-            echo "Release Type Value: ${{ steps.release-type.outputs.release-type }}"
           else
             echo "::set-output name=release-type::major"
-            echo "Release Type Value: ${{ steps.release-type.outputs.release-type }}"
           fi
         continue-on-error: true
-
-      - name: Print Release Type Value
-        run: |
-          echo "Release Type Value: ${{ steps.release-type.outputs.release-type }}"
 
       - name: Create Beta Release
         if: steps.release-type.outputs.release-type == 'beta'
         run: |
-          cci task run upload_beta --org packaging
+          cci flow run release_beta --org packaging         
 
       - name: Create Major Release
         if: steps.release-type.outputs.release-type == 'major'
         run: |
-          cci task run upload_production --org packaging
+          cci flow run release_production --org packaging
