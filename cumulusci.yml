@@ -3,12 +3,25 @@ project:
     name: Food-Bank
     package:
         name: n
-        api_version: '55.0'
+        api_version: '57.0'
     git:
         default_branch: 'main'
+        repo_url: https://github.com/kayla-blackthorn/Food-Bank
+        release_notes:
+            parsers:
+                4:
+                    class_path: cumulusci.tasks.release_notes.parser.GithubLinesParser
+                    title: Features/Issues
+                5:
+                    class_path: cumulusci.tasks.release_notes.parser.InstallLinkParser
+                    title: Installation Info
     source_format: sfdx
 
 tasks:
+    post_to_slack:
+        description: Posts to salesforce-builds Slack channel
+        class_path: task_modules.tasks.PostToSlackCommand
+
     robot:
         options:
             suites: robot/Food-Bank/tests
@@ -23,3 +36,58 @@ tasks:
     run_tests:
         options:
             required_org_code_coverage_percent: 75
+
+flows:
+    release_beta:
+        group: Release Operations
+        description: Upload and release a beta version of the metadata currently in packaging
+        steps:
+            1:
+                task: upload_beta
+                options:
+                    name: Kayla Test Package
+            2:
+                task: github_release
+                options:
+                    version: ^^upload_beta.version_number
+                    version_id: ^^upload_beta.version_id
+                    dependencies: ^^upload_beta.dependencies
+            3:
+                task: github_release_notes
+                ignore_failure: True  # Attempt to generate release notes but don't fail build
+                options:
+                    publish: True
+                    tag: ^^github_release.tag_name
+                    version_id: ^^upload_beta.version_id
+            4: 
+                task: post_to_slack
+                options:
+                    version_number: ^^upload_beta.version_number
+                    version_id: ^^upload_beta.version_id 
+
+    release_production:
+        group: Release Operations
+        description: Upload and release a production version of the metadata currently in packaging
+        steps:
+            1:
+                task: upload_production
+                options:
+                    name: Kayla Test Package
+            2:
+                task: github_release
+                options:
+                    version: ^^upload_production.version_number
+                    version_id: ^^upload_production.version_id
+                    dependencies: ^^upload_production.dependencies
+            3:
+                task: github_release_notes
+                ignore_failure: True  # Attempt to generate release notes but don't fail build
+                options:
+                    publish: True
+                    tag: ^^github_release.tag_name
+                    version_id: ^^upload_production.version_id
+            4: 
+                task: post_to_slack
+                options:
+                    version_number: ^^upload_production.version_number
+                    version_id: ^^upload_production.version_id
