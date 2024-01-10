@@ -13,6 +13,9 @@ class PostToSlackCommand(Command):
     }
 
     def _run_task(self):
+        self.logger.info(f'Test Variable: {self.options["test_variable"]}')
+        self.logger.info(f'Test Variable 2: {test_variable2}')
+
         message = f'Successfully Created Kayla Test Package Version: {self.options["test_variable"]}\n'
         message += 'Install URL: https://login.salesforce.com/packaging/installPackage.apexp?p0={}'.format(self.options['test_variable2'])
         self.options["command"] = (
