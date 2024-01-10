@@ -10,6 +10,7 @@ env:
     SFDX_CLIENT_ID: ${{ secrets.SFDX_CLIENT_ID }}
     SFDX_HUB_KEY: ${{ secrets.SFDX_HUB_KEY }}
     CUMULUSCI_ORG_packaging: ${{ secrets.CUMULUSCI_ORG_PACKAGING }}
+    TEST_VARIABLE: ${{ vars.BETA_RELEASE }}
 
 jobs:
   build:

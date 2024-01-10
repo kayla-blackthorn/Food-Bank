@@ -43,27 +43,10 @@ flows:
         description: Upload and release a beta version of the metadata currently in packaging
         steps:
             1:
-                task: upload_beta
-                options:
-                    name: Kayla Test Package
-            2:
-                task: github_release
-                options:
-                    version: ^^upload_beta.version_number
-                    version_id: ^^upload_beta.version_id
-                    dependencies: ^^upload_beta.dependencies
-            3:
-                task: github_release_notes
-                ignore_failure: True  # Attempt to generate release notes but don't fail build
-                options:
-                    publish: True
-                    tag: ^^github_release.tag_name
-                    version_id: ^^upload_beta.version_id
-            4: 
                 task: post_to_slack
                 options:
-                    version_number: ^^upload_beta.version_number
-                    version_id: ^^upload_beta.version_id 
+                    test_variable: ${{ vars.TEST_VARIABLE }}
+                    test_variable2: ${{ $CUMULUSCI_test_variable }}
 
     release_production:
         group: Release Operations
